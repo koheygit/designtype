@@ -899,6 +899,153 @@ html,body{overflow-x:hidden}
 }
 </style>
 
+
+<style>
+/* v24: interactive states for primary action buttons */
+button,
+.button,
+.btn,
+a.button,
+a.btn {
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+a.button:hover,
+a.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.10);
+}
+
+button:active,
+.button:active,
+.btn:active,
+a.button:active,
+a.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+}
+
+button:focus-visible,
+.button:focus-visible,
+.btn:focus-visible,
+a.button:focus-visible,
+a.btn:focus-visible {
+  outline: 3px solid rgba(36,87,214,.28);
+  outline-offset: 3px;
+}
+
+/* Primary buttons */
+#submit-btn:hover,
+#result-btn:hover,
+button[type="submit"]:hover {
+  background-color: #173fae !important;
+  border-color: #173fae !important;
+}
+
+/* Secondary actions: type directory / restart */
+#show-types-btn:hover,
+#restart-btn:hover,
+#retry-btn:hover {
+  background-color: #eef3ff !important;
+  color: #173fae !important;
+  border-color: #9fb4ef !important;
+}
+
+/* Fallback targeting by common action classes */
+.actions .secondary:hover,
+.result-actions .secondary:hover {
+  background-color: #eef3ff !important;
+  color: #173fae !important;
+  border-color: #9fb4ef !important;
+}
+</style>
+
+
+<style>
+/* v25: stronger hover contrast for gray secondary buttons */
+#show-types-btn:hover,
+#restart-btn:hover,
+#retry-btn:hover,
+.actions .secondary:hover,
+.result-actions .secondary:hover {
+  background-color: #2f3a4a !important;
+  color: #ffffff !important;
+  border-color: #2f3a4a !important;
+  box-shadow: 0 8px 20px rgba(47,58,74,.22) !important;
+}
+
+#show-types-btn:active,
+#restart-btn:active,
+#retry-btn:active,
+.actions .secondary:active,
+.result-actions .secondary:active {
+  background-color: #232b37 !important;
+  color: #ffffff !important;
+  border-color: #232b37 !important;
+}
+</style>
+
+
+<style>
+/* v26: exact selectors for secondary action buttons */
+#open-types-from-quiz,
+#open-types-from-result,
+#restart-button {
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease !important;
+}
+
+#open-types-from-quiz:hover,
+#open-types-from-result:hover,
+#restart-button:hover {
+  background-color: #2f3a4a !important;
+  color: #ffffff !important;
+  border-color: #2f3a4a !important;
+transform: translateY(-1px) !important;
+}
+
+#open-types-from-quiz:active,
+#open-types-from-result:active,
+#restart-button:active {
+  background-color: #232b37 !important;
+  color: #ffffff !important;
+  border-color: #232b37 !important;
+transform: translateY(0) !important;
+}
+
+#open-types-from-quiz:focus-visible,
+#open-types-from-result:focus-visible,
+#restart-button:focus-visible {
+  outline: 3px solid rgba(47,58,74,.28) !important;
+  outline-offset: 3px !important;
+}
+</style>
+
+
+<style>
+/* v28: explicitly remove inherited hover/active shadows */
+#open-types-from-quiz:hover,
+#open-types-from-result:hover,
+#restart-button:hover,
+#open-types-from-quiz:active,
+#open-types-from-result:active,
+#restart-button:active {
+  box-shadow: none !important;
+}
+</style>
+
 </head>
 <body>
 <main class="container">
