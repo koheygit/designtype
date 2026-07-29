@@ -106,8 +106,15 @@ body{
 }
 .container{width:min(980px,calc(100% - 36px));padding:62px 0 88px}
 .hero{max-width:780px;margin:0 auto 44px;text-align:center}
-.hero h1{font-size:clamp(38px,6.4vw,64px);line-height:1.04;letter-spacing:-.052em;font-weight:720;margin:0 0 22px}
-.hero p{font-size:clamp(15px,2vw,18px);line-height:1.75;color:var(--muted);margin:0 auto;max-width:720px}
+.hero h1{
+    font-size:clamp(32px,5vw,48px);
+    margin-bottom:16px;
+}
+
+.hero p{
+    font-size:clamp(14px,1.8vw,16px);
+    line-height:1.6;
+}
 .progress-wrap{position:sticky;top:0;z-index:20;background:rgba(245,245,247,.94);backdrop-filter:blur(8px);padding:12px 0 14px;margin:0 0 24px;border:0;border-radius:0;box-shadow:none}
 .progress-track{height:10px;background:#e9edf3;border-radius:999px;overflow:hidden;}
 .progress-fill{height:100%;background:linear-gradient(90deg,#2457d6,#5a8cff);border-radius:999px;transition:width .25s ease;}
