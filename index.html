@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -565,21 +564,80 @@ html,body{overflow-x:hidden}
   .result-card > .section-lead + .info-list,.result-card > p + .info-list{margin-top:20px;}
 }
 </style>
+
+
+
+
+<style>
+/* v14.5: fixed progress keeps its width; background spans the viewport */
+#quiz-section .hero{margin-bottom:24px}
+#quiz-section .hero .page-link-row{margin-top:24px}
+#progress-sticky-sentinel{width:100%;height:1px;margin-top:18px}
+#quiz-section .hero .progress-wrap{
+  position:relative !important;
+  width:100%;
+  margin:0;
+  padding:12px 0 14px;
+  background:rgba(245,245,247,.96);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  box-shadow:none;
+}
+#quiz-section .progress-wrap.is-viewport-fixed{
+  position:fixed !important;
+  top:0;
+  transform:none;
+  z-index:1000;
+  margin:0;
+  padding:12px 0 14px;
+  background:transparent;
+  border-bottom:0;
+  box-shadow:none;
+  isolation:isolate;
+}
+#quiz-section .progress-wrap.is-viewport-fixed::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  z-index:-1;
+  background:rgba(245,245,247,.96);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  box-shadow:0 6px 18px rgba(0,0,0,.055);
+  pointer-events:none;
+}
+#progress-fixed-placeholder{display:none;width:100%}
+#progress-fixed-placeholder.is-active{display:block}
+@media(max-width:760px){
+  #progress-sticky-sentinel{margin-top:16px}
+  #quiz-section .hero .progress-wrap{padding:10px 0 12px}
+  #quiz-section .progress-wrap.is-viewport-fixed{
+    padding:10px 0 12px;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="container">
-<section id="quiz-section" aria-labelledby="quiz-title">
+<section id="quiz-section" aria-labelledby="quiz-title" aria-hidden="false">
   <header class="hero">
     <h1 id="quiz-title">プロダクトデザイナータイプ診断</h1>
     <p>GUI・UX・ハードウェア・サービスデザインを含む、プロダクト開発における「考え方」「判断のしかた」「仕事の進め方」の傾向を診断します。正解・不正解はありません。迷った場合は、より自然に行っている方を選んでください。（約5〜8分）</p>
     <div class="page-link-row"><button id="open-types-from-quiz" class="page-link-button" type="button">16タイプ一覧を見る</button></div>
-  </header>
-  <div class="progress-wrap">
-    <div class="progress-meta"><span>回答進捗</span><span id="progress-text">0 / 60</span></div>
-    <div id="progress-bar" class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
-      <div id="progress-fill" class="progress-fill"></div>
+<div id="progress-sticky-sentinel" aria-hidden="true"></div>
+    <div class="progress-wrap">
+      <div class="progress-meta"><span>回答進捗</span><span id="progress-text">0 / 60</span></div>
+      <div id="progress-bar" class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
     </div>
-  </div>
+    <div id="progress-fixed-placeholder" aria-hidden="true"></div>
+  </header>
   <form id="quiz-form" novalidate>
     <div id="questions-container"></div>
     <button class="submit-button" type="submit">診断結果を見る</button>
@@ -672,22 +730,22 @@ const progressText=document.getElementById("progress-text");
 
 const typeGroupsData=[
   {
-    name:"構想家", code:"NT", theme:"nt",
+    name:"探究派", code:"NT", theme:"nt",
     description:"複雑な課題を構造化し、新しい仕組みや未来の方向性を描くグループです。",
     types:["INTJ","INTP","ENTJ","ENTP"]
   },
   {
-    name:"共感家", code:"NF", theme:"nf",
+    name:"共感派", code:"NF", theme:"nf",
     description:"人の感情や価値観を深く捉え、意味のある体験やビジョンへ変えるグループです。",
     types:["INFJ","INFP","ENFJ","ENFP"]
   },
   {
-    name:"実務家", code:"SJ", theme:"sj",
+    name:"堅実派", code:"SJ", theme:"sj",
     description:"品質、運用、信頼性を大切にし、計画を着実な成果へ結びつけるグループです。",
     types:["ISTJ","ISFJ","ESTJ","ESFJ"]
   },
   {
-    name:"職人・表現者", code:"SP", theme:"sp",
+    name:"行動派", code:"SP", theme:"sp",
     description:"実物や感覚から素早く学び、機能する試作や魅力的な表現へ仕上げるグループです。",
     types:["ISTP","ISFP","ESTP","ESFP"]
   }
@@ -996,6 +1054,106 @@ document.getElementById("close-types").addEventListener("click",closeTypesDirect
 renderTypeDirectory();
 renderQuestions();
 </script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const quizSection = document.getElementById("quiz-section");
+  const progressWrap = quizSection && quizSection.querySelector(".progress-wrap");
+  const sentinel = document.getElementById("progress-sticky-sentinel");
+  const placeholder = document.getElementById("progress-fixed-placeholder");
+
+  if (!quizSection || !progressWrap || !sentinel || !placeholder) return;
+
+  let originalRect = null;
+
+  function quizIsVisible() {
+    return window.getComputedStyle(quizSection).display !== "none" &&
+      quizSection.getAttribute("aria-hidden") !== "true";
+  }
+
+  function measureOriginalGeometry() {
+    const wasFixed = progressWrap.classList.contains("is-viewport-fixed");
+
+    if (wasFixed) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      progressWrap.style.left = "";
+      progressWrap.style.width = "";
+    }
+
+    originalRect = progressWrap.getBoundingClientRect();
+
+    if (wasFixed) {
+      progressWrap.style.left = originalRect.left + "px";
+      progressWrap.style.width = originalRect.width + "px";
+      progressWrap.classList.add("is-viewport-fixed");
+    }
+  }
+
+  function setFixedGeometry() {
+    if (!originalRect) measureOriginalGeometry();
+    progressWrap.style.left = originalRect.left + "px";
+    progressWrap.style.width = originalRect.width + "px";
+  }
+
+  function clearFixedGeometry() {
+    progressWrap.style.left = "";
+    progressWrap.style.width = "";
+  }
+
+  function updateProgressPosition() {
+    if (!quizIsVisible()) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+      originalRect = null;
+      return;
+    }
+
+    const shouldFix = sentinel.getBoundingClientRect().top <= 0;
+
+    if (shouldFix) {
+      if (!progressWrap.classList.contains("is-viewport-fixed")) {
+        originalRect = progressWrap.getBoundingClientRect();
+        placeholder.style.height = originalRect.height + "px";
+        placeholder.classList.add("is-active");
+        setFixedGeometry();
+        progressWrap.classList.add("is-viewport-fixed");
+      }
+    } else {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+      originalRect = null;
+    }
+  }
+
+  window.addEventListener("scroll", updateProgressPosition, { passive: true });
+  window.addEventListener("resize", function () {
+    const wasFixed = progressWrap.classList.contains("is-viewport-fixed");
+
+    if (wasFixed) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+    }
+
+    originalRect = progressWrap.getBoundingClientRect();
+    updateProgressPosition();
+  });
+
+  document.addEventListener("click", function () {
+    requestAnimationFrame(updateProgressPosition);
+  });
+
+  updateProgressPosition();
+});
+</script>
+
+
 </body>
 </html>
-
