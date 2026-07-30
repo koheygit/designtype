@@ -3,483 +3,1824 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>デザイン史年表 - モダンミニマル</title>
+<title>プロダクトデザイナータイプ診断</title>
 <style>
-    :root {
-        --bg: #fafafa;
-        --grid-line: #f1f5f9;
-        --path-line: #cbd5e1;
-        --text-main: #334155;
-        --text-sub: #64748b;
-        --text-anno: #475569;
-        
-        /* 地域のアクセントカラー */
-        --c-jp: #ef4444;
-        --c-uk: #3b82f6;
-        --c-eu: #f59e0b;
-        --c-de: #10b981;
-        --c-no: #8b5cf6;
-        --c-us: #06b6d4;
-        --c-gl-prod: #64748b;
-        --c-gl-serv: #0ea5e9;
-    }
+:root {
+  --bg:#f3f5f8; --surface:#fff; --surface-sub:#f7f9fc; --text:#1d1d1f;
+  --muted:#647084; --line:#dce2ea; --primary:#0071e3; --primary-soft:#e8f2ff;
+  --accent:#ffb020; --danger:#c63b3b; --success:#16825d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;line-height:1.75}
+button,input{font:inherit}
+.container{width:min(940px,calc(100% - 32px));margin:auto;padding:36px 0 64px}
+.hero{text-align:center;margin-bottom:28px}
+.hero h1{font-size:clamp(25px,5vw,38px);line-height:1.35;margin:0 0 12px}
+.hero p{margin:0;color:var(--muted)}
+.progress-wrap{position:sticky;top:0;z-index:20;background:rgba(245,245,247,.94);backdrop-filter:blur(8px);padding:12px 0 14px;margin-bottom:24px}
+.progress-meta{display:flex;justify-content:space-between;gap:16px;font-size:13px;color:var(--muted);margin-bottom:6px}
+.progress-track{height:10px;background:#e9edf3;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:#2457d6;border-radius:999px;transition:width .25s ease;}
+.question-card{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:24px;margin:0 0 18px;box-shadow:0 8px 24px rgba(31,46,72,.05)}
+.question-card.is-unanswered{border-color:var(--danger);box-shadow:0 0 0 3px rgba(198,59,59,.11)}
+.question-title{font-weight:750;font-size:17px;margin-bottom:16px;padding:0 4px}
+.options{display:grid;gap:10px}
+.option{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--line);border-radius:12px;padding:14px 15px;cursor:pointer;background:#fff;transition:.2s}
+.option:hover{border-color:#9fb1d8;background:#fbfcff}
+.option.is-selected{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 2px rgba(36,87,214,.08)}
+.option input{margin-top:5px;accent-color:var(--primary)}
+.option-letter{font-weight:800;color:var(--primary);min-width:20px}
+.submit-button,.secondary-button{width:100%;border:0;border-radius:13px;padding:16px 20px;font-weight:800;cursor:pointer}
+.submit-button{background:var(--primary);color:#fff;margin-top:22px;font-size:17px}
+.secondary-button{background:#e9edf3;color:#344056;margin-top:28px}
+button:focus-visible,input:focus-visible{outline:3px solid #7aa0ff;outline-offset:3px}
+#result-section{display:none}
+.result-hero{overflow:hidden;background:#2457d6;color:#fff;border-radius:24px;}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.78}
+.result-code{font-size:clamp(42px,9vw,72px);font-weight:900;line-height:1;margin:16px 0 8px}
+.result-name{font-size:clamp(22px,4vw,32px);font-weight:800;margin-bottom:12px}
+.result-summary{max-width:720px;margin:0;font-size:16px;opacity:.94}
+.badge{display:inline-flex;align-items:center;gap:7px;margin-top:20px;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:750;font-size:13px}
+.result-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.8fr);gap:22px;align-items:start}
+.stack{display:grid;gap:22px}
+.result-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 9px 28px rgba(31,46,72,.055)}
+.result-card h2,.result-card h3{margin:0 0 14px;line-height:1.4}
+.result-card h2{font-size:21px}
+.result-card h3{font-size:17px}
+.result-card p{margin:0;color:#354156}
+.info-list{margin:0;padding-left:1.25em;color:#354156}
+.info-list li+li{margin-top:7px}
+.axis-item{padding:18px 0;border-bottom:1px solid var(--line)}
+.axis-item:first-child{padding-top:2px}
+.axis-item:last-child{border-bottom:0;padding-bottom:0}
+.axis-title{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:12px}
+.axis-title strong{font-size:15px}
+.axis-result{font-size:13px;font-weight:800;color:var(--primary)}
+.axis-scale{display:grid;grid-template-columns:36px minmax(0,1fr) 36px;align-items:center;gap:10px}
+.axis-letter{font-size:20px;font-weight:900;text-align:center;color:#566177}
+.axis-letter.is-winner{color:var(--primary)}
+.axis-line{position:relative;height:28px}
+.axis-line::before{content:"";position:absolute;left:0;right:0;top:50%;height:8px;transform:translateY(-50%);border-radius:999px;background:#dce6ff}
+.axis-line::after{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:#aeb8c8}
+.axis-marker{position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--primary);border:4px solid #fff;box-shadow:0 2px 9px rgba(36,87,214,.35);transform:translate(-50%,-50%);z-index:2}
+.axis-labels{display:flex;justify-content:space-between;gap:14px;margin-top:7px;font-size:12px;color:var(--muted)}
+.axis-strength{display:flex;align-items:center;gap:9px;margin-top:13px}
 
-    body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Sans', sans-serif;
-        background-color: var(--bg);
-        margin: 0;
-        padding: 40px;
-        color: var(--text-main);
-        -webkit-font-smoothing: antialiased;
-    }
+.axis-strength-text{font-size:13px;font-weight:800;color:#354156}
+.axis-description{font-size:13px!important;margin-top:7px!important;color:var(--muted)!important}
+.sub-card{border:1px solid #c9d6ff;background:#f4f7ff}
+.sub-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.sub-code{font-size:25px;font-weight:900;color:var(--primary)}
+.sub-name{font-weight:800}
+.sub-note{font-size:13px;color:var(--muted);margin-top:10px}
+.axis-reason{display:inline-block;margin-top:12px;padding:7px 10px;border-radius:8px;background:#e7edff;color:#264b9b;font-size:13px;font-weight:700}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:760px){
+  .container{width:min(100% - 22px,940px);padding-top:22px}
+  .result-grid,.two-col{grid-template-columns:1fr}
+  .question-card,.result-card{padding:19px}
+  .result-hero{background:#2457d6;color:#fff;border-radius:24px;}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
-    .header-area {
-        text-align: center;
-        margin-bottom: 30px;
-    }
 
-    h1 {
-        font-weight: 300;
-        font-size: 1.8rem;
-        letter-spacing: 0.1em;
-        margin: 0 0 10px 0;
-    }
 
-    .instruction {
-        color: var(--text-sub);
-        font-size: 0.85rem;
-    }
+/* Final verified visual system */
+:root{
+  --bg:#f5f5f7;
+  --surface:#ffffff;
+  --surface-sub:#f9f9fb;
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --line:rgba(0,0,0,.10);
+  --primary:#0071e3;
+  --primary-soft:#eef7ff;
+  --danger:#d70015;
+}
+body{
+  background:#f5f5f7;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  letter-spacing:-.012em;
+}
+.container{width:min(980px,calc(100% - 36px));padding:62px 0 88px}
+.hero{max-width:780px;margin:0 auto 44px;text-align:center}
+.hero h1{
+    font-size:clamp(32px,5vw,48px);
+    margin-bottom:16px;
+}
 
-    /* スクロールエリア */
-    .scroll-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-        position: relative;
-    }
+.hero p{
+    font-size:14px;
+    line-height:1.7;
+    max-width:100%;
+    margin:0 auto;
+    text-align:left;
+}
+.progress-wrap{position:sticky;top:0;z-index:20;background:rgba(245,245,247,.94);backdrop-filter:blur(8px);padding:12px 0 14px;margin:0 0 24px;border:0;border-radius:0;box-shadow:none}
+.progress-track{height:10px;background:#e9edf3;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:#2457d6;border-radius:999px;transition:width .25s ease;}
+.question-card{border:0;background:var(--surface);border-radius:28px;padding:30px 32px;margin-bottom:20px;box-shadow:0 8px 34px rgba(0,0,0,.055)}
+.question-card.is-unanswered{box-shadow:0 0 0 2px var(--danger),0 8px 34px rgba(0,0,0,.055)}
+.question-title{font-size:18px;line-height:1.55;font-weight:650;letter-spacing:-.022em;margin-bottom:20px;padding:0}
+.options{gap:12px}
+.option{
+  position:relative;
+  display:grid;
+  grid-template-columns:22px 26px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  min-height:62px;
+  padding:15px 18px;
+  border:1px solid rgba(0,0,0,.10);
+  border-radius:18px;
+  background:#fbfbfd;
+  color:var(--text);
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.option:hover{background:#fff;border-color:rgba(0,0,0,.22);box-shadow:0 7px 20px rgba(0,0,0,.055)}
+.option:active{transform:scale(.995)}
+.option input[type="radio"]{
+  position:absolute;
+  left:18px;
+  top:50%;
+  width:22px;
+  height:22px;
+  margin:0;
+  transform:translateY(-50%);
+  opacity:0;
+  cursor:pointer;
+}
+.option::before{
+  content:"";
+  grid-column:1;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1.5px solid #8e8e93;
+  background:#fff;
+  box-sizing:border-box;
+  align-self:center;
+  justify-self:center;
+}
+.option.is-selected{background:var(--primary-soft);border-color:rgba(0,113,227,.55);box-shadow:0 0 0 3px rgba(0,113,227,.10)}
+.option.is-selected::before{border:6px solid var(--primary)}
+.option:has(input:focus-visible){outline:3px solid rgba(0,113,227,.32);outline-offset:3px}
+.option-letter{grid-column:2;min-width:0;color:var(--primary);font-weight:700;line-height:1.4}
+.option>span:last-child{grid-column:3;line-height:1.6;align-self:center}
+.submit-button,.secondary-button{border-radius:999px;padding:17px 24px;font-weight:650;letter-spacing:-.01em}
+.submit-button{background:var(--primary);box-shadow:0 8px 18px rgba(0,113,227,.20)}
+.secondary-button{background:#e8e8ed;color:#1d1d1f}
 
-    /* マップ本体 (1年=20px換算。1850年〜2050年 = 4000px) */
-    .map-container {
-        width: 4000px;
-        height: 2050px;
-        position: relative;
-        /* 10年(200px)ごとのグリッド線 */
-        background-image: repeating-linear-gradient(to right, transparent, transparent 199px, var(--grid-line) 199px, var(--grid-line) 200px);
-    }
+/* Highly legible result identity */
+.result-hero{background:#2457d6;color:#fff;border-radius:24px;}
+.result-hero::after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-150px;top:-205px;background:transparent;pointer-events:none}
+.eyebrow{position:relative;z-index:1;color:var(--muted);opacity:1;font-size:12px;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
+.result-code{position:relative;z-index:1;display:inline-block;font-size:clamp(72px,13vw,126px);font-weight:760;letter-spacing:-.065em;line-height:.86;margin:28px 0 22px;color:#111113}
+.result-name{position:relative;z-index:1;font-size:clamp(26px,4vw,40px);font-weight:680;line-height:1.2;letter-spacing:-.038em;margin-bottom:18px;color:#1d1d1f}
+.result-summary{position:relative;z-index:1;max-width:700px;font-size:17px;line-height:1.75;color:#515154;opacity:1}
+.badge{position:relative;z-index:1;margin-top:24px;padding:9px 14px;background:#eef7ff;color:#0066cc;font-size:13px;font-weight:650}
+.result-grid{grid-template-columns:minmax(0,1.42fr) minmax(280px,.78fr);gap:24px}
+.stack{gap:24px}
+.result-card{border:0;border-radius:28px;padding:30px;background:#fff;box-shadow:0 8px 34px rgba(0,0,0,.055)}
+.result-card h2{font-size:22px;letter-spacing:-.03em;margin-bottom:16px}
+.result-card h3{letter-spacing:-.02em}
+.result-card p,.info-list{color:#454549}
+.sub-card{background:#f7f7fa;border:0}
+.sub-code{font-size:32px;color:#111113;letter-spacing:-.04em}
+.axis-intro{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.75}
+.axis-item{padding:24px 0;border-color:rgba(0,0,0,.08)}
+.axis-title{align-items:center}
+.axis-title strong{font-size:16px;letter-spacing:-.02em}
+.axis-result{font-size:13px;font-weight:650;padding:5px 9px;border-radius:999px;background:#eef7ff;color:#0066cc}
+.axis-letter{font-weight:720;color:#8e8e93}
+.axis-letter.is-winner{color:#111113}
+.axis-line::before{height:5px;background:#dedee3}
+.axis-line::after{background:#a9a9af}
+.axis-marker{width:20px;height:20px;border:4px solid #fff;background:#0071e3;box-shadow:0 2px 9px rgba(0,113,227,.32)}
+.axis-strength{margin-top:10px}
+.axis-strength-text{font-size:13px;font-weight:600;color:#3a3a3c}
+.axis-description{font-size:13px!important;line-height:1.65;color:#6e6e73!important}
+@media(max-width:760px){
+  .container{width:min(100% - 22px,980px);padding:34px 0 60px}
+  .hero{margin-bottom:30px}
+  .hero h1{font-size:38px}
+  .progress-wrap{top:0;border-radius:0}
+  .question-card{padding:24px 20px;border-radius:23px}
+  .option{grid-template-columns:22px 24px minmax(0,1fr);padding:14px 14px;gap:10px}
+  .option input[type="radio"]{left:14px}
+  .result-hero{background:#2457d6;color:#fff;border-radius:24px;}
+  .result-code{font-size:76px}
+  .result-grid,.two-col{grid-template-columns:1fr}
+  .result-card{padding:25px 22px;border-radius:24px}
+}
 
-    /* タイムラインヘッダー */
-    .timeline-header {
-        position: sticky;
-        top: 0; left: 0;
-        width: 100%; height: 50px;
-        background: rgba(255,255,255,0.95);
-        border-bottom: 1px solid #e2e8f0;
-        z-index: 20;
-        backdrop-filter: blur(4px);
-    }
 
-    .year-marker {
-        position: absolute;
-        top: 16px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #94a3b8;
-        letter-spacing: 0.05em;
-        transform: translateX(-50%);
-    }
+.section-lead{margin:-2px 0 24px;color:var(--muted);font-size:14px;line-height:1.75}
+html,body{overflow-x:hidden}
+.result-hero::after{display:none!important}
 
-    /* 地域ラベル（左側固定） */
-    .region-label {
-        position: sticky;
-        left: 20px;
-        display: inline-block;
-        padding: 4px 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--text-sub);
-        background: rgba(255,255,255,0.9);
-        border-left: 3px solid;
-        border-radius: 2px;
-        z-index: 15;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.02);
-    }
 
-    /* SVG パス */
-    svg {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        z-index: 1;
-        pointer-events: none;
-    }
+/* Result typography and spacing refinement */
+.result-card > h2{margin:0 0 22px;line-height:1.35}
+.result-card > h2 + .section-lead{margin-top:-4px}
+.result-card p{line-height:1.85}
+.info-list{margin-top:4px;display:grid;gap:13px}
+.info-list li{line-height:1.65;padding-left:1.35em}
+.two-col{gap:26px}
+.stack{gap:26px}
+.career-lead{margin-bottom:30px}
+.career-list{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;row-gap:14px}
+.sub-header{margin-bottom:22px}
+.axis-intro{margin-bottom:48px!important}
+@media(max-width:640px){
+  .result-card > h2{margin-bottom:18px}
+  .result-card p{line-height:1.8}
+  .info-list{gap:11px}
+  .career-lead{margin-bottom:24px}
+  .career-list{grid-template-columns:1fr}
+  .two-col,.stack{gap:20px}
+  .axis-intro{margin-bottom:38px!important}
+}
 
-    .path-line {
-        stroke: var(--path-line);
-        stroke-width: 1.5;
-        fill: none;
-        marker-end: url(#arrow);
-    }
-
-    /* 影響コメント（アノテーション） */
-    .annotation {
-        position: absolute;
-        font-size: 0.75rem;
-        color: var(--text-anno);
-        background: rgba(255,255,255,0.85);
-        padding: 4px 10px;
-        border-left: 2px solid var(--path-line);
-        backdrop-filter: blur(2px);
-        z-index: 2;
-        line-height: 1.4;
-        white-space: nowrap;
-        pointer-events: none;
-    }
-
-    /* ノード（期間バー） */
-    .node-bar {
-        position: absolute;
-        height: 44px;
-        background: #fff;
-        border: 1px solid #cbd5e1;
-        border-radius: 22px; /* タイムラインらしい丸み */
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        box-sizing: border-box;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.01);
-    }
-
-    .node-bar:hover {
-        border-color: #94a3b8;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-        z-index: 1000;
-        transform: translateY(-1px);
-    }
-
-    .node-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-right: 10px;
-        flex-shrink: 0;
-    }
-
-    .node-title {
-        font-size: 0.85rem;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .node-duration {
-        font-size: 0.7rem;
-        color: #94a3b8;
-        margin-left: 8px;
-        font-weight: normal;
-    }
-
-    /* ツールチップ */
-    .tooltip {
-        position: absolute;
-        bottom: 55px; /* バーの上部に表示 */
-        left: 20px;
-        width: 280px;
-        background: #1e293b;
-        color: #f8fafc;
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        line-height: 1.6;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.2s ease;
-        pointer-events: none;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    .tooltip::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 20px;
-        width: 10px;
-        height: 10px;
-        background: #1e293b;
-        transform: rotate(45deg);
-    }
-
-    .node-bar:hover .tooltip {
-        opacity: 1;
-        visibility: visible;
-        bottom: 60px;
-    }
-
+/* Consistent vertical rhythm for result content */
+.result-card > .section-lead + .info-list{margin-top:0}
+.result-card > h2 + .info-list{margin-top:8px}
+.result-card .info-list li + li{margin-top:2px}
+.result-card .sub-header + p{margin-top:18px}
+.result-card .sub-header + p + p{margin-top:14px}
+.result-detail{margin-top:20px}
+@media(max-width:640px){
+  .result-card > h2 + .info-list{margin-top:6px}
+  .result-detail{margin-top:17px}
+}
 </style>
+
+
+
+
+
+<style>
+/* Result layout — rebuilt against the actual DOM */
+#result-section{
+  width:100%;
+  box-sizing:border-box;
+}
+#result-section[aria-hidden="false"]{
+  display:block;
+}
+.result-hero{
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 30px;
+  padding:42px 40px;
+  overflow:hidden;
+  border:0;
+  border-radius:28px;
+  background:#3478f6;
+  color:#fff;
+  box-shadow:0 18px 48px rgba(37,99,235,.22);
+}
+.result-hero .eyebrow,
+.result-hero .result-code,
+.result-hero .result-name,
+.result-hero .result-summary,
+.result-hero .badge{
+  color:#fff;
+}
+.result-hero .eyebrow{
+  margin:0;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.13em;
+  opacity:.82;
+}
+.result-hero .result-code{
+  margin:18px 0 10px;
+  font-size:clamp(64px,9vw,108px);
+  line-height:.9;
+  font-weight:780;
+  letter-spacing:-.065em;
+}
+.result-hero .result-name{
+  margin:0;
+  font-size:clamp(25px,4vw,38px);
+  line-height:1.18;
+  font-weight:720;
+  letter-spacing:-.035em;
+}
+.result-hero .result-summary{
+  max-width:760px;
+  margin:18px 0 0;
+  font-size:16px;
+  line-height:1.8;
+  opacity:.96;
+}
+.result-hero .badge{
+  margin-top:22px;
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.result-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(300px,.78fr);
+  gap:28px;
+  align-items:start;
+  width:100%;
+  box-sizing:border-box;
+}
+.stack{
+  display:grid;
+  gap:24px;
+  min-width:0;
+}
+.two-col{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:24px;
+}
+.result-card{
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:28px;
+  background:#fff;
+  color:#1d1d1f;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.055);
+}
+.result-card h2,
+.result-card h3{
+  color:#1d1d1f;
+}
+.result-card h2{
+  margin:0 0 16px;
+  font-size:21px;
+  line-height:1.35;
+  letter-spacing:-.025em;
+}
+.result-card h3{
+  margin-bottom:12px;
+}
+.result-card p,
+.result-card li{
+  color:#424245;
+  line-height:1.75;
+}
+.result-card .info-list{
+  margin:0;
+}
+.sub-card{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+}
+.sub-header{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom:16px;
+}
+.sub-code{
+  flex:0 0 auto;
+  font-size:34px;
+  line-height:1;
+  font-weight:780;
+  letter-spacing:-.045em;
+  color:#0071e3;
+}
+.sub-name{
+  font-size:17px;
+  font-weight:700;
+  line-height:1.4;
+  color:#1d1d1f;
+}
+.sub-note{
+  margin-top:4px;
+  color:#6e6e73;
+  line-height:1.55;
+}
+.axis-intro{
+  margin:6px 0 38px;
+  color:#6e6e73;
+  font-size:14px;
+  line-height:1.8;
+}
+#axis-chart{
+  margin:0;
+}
+.axis-item{
+  padding:22px 0;
+  border-bottom:1px solid #e5e5ea;
+}
+.axis-item:first-child{
+  padding-top:0;
+}
+.axis-item:last-child{
+  padding-bottom:0;
+  border-bottom:0;
+}
+#restart-button{
+  margin-top:30px;
+}
+
+@media (max-width:900px){
+  .result-grid{
+    grid-template-columns:1fr;
+  }
+}
+@media (max-width:720px){
+  .result-hero{
+    margin-bottom:22px;
+    padding:32px 24px;
+    border-radius:24px;
+  }
+  .result-hero .result-code{
+    font-size:clamp(60px,22vw,84px);
+  }
+  .result-card{
+    padding:22px;
+  }
+  .two-col{
+    grid-template-columns:1fr;
+  }
+  .result-grid,
+  .stack{
+    gap:20px;
+  }
+  .axis-intro{
+    margin-bottom:30px;
+  }
+}
+
+.section-lead{margin:-2px 0 24px;color:var(--muted);font-size:14px;line-height:1.75}
+
+/* v8 spacing refinements */
+.axis-intro{margin:6px 0 48px;}
+.section-lead{margin:-2px 0 34px;}
+@media(max-width:720px){
+  .axis-intro{margin-bottom:38px;}
+  .section-lead{margin-bottom:30px;}
+}
+</style>
+
+
+<style>
+/* v12: compact lists and 16-type directory */
+.result-card .info-list{
+  margin-top:0;
+  gap:0;
+}
+.result-card .info-list li{
+  padding-left:.25em;
+  line-height:1.65;
+}
+.result-card .info-list li + li{
+  margin-top:5px;
+}
+.result-card > .section-lead + .info-list,
+.result-card > p + .info-list{
+  margin-top:22px;
+}
+.career-lead{margin-bottom:0!important}
+.career-list{row-gap:0!important}
+.page-link-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.page-link-button{border:0;border-radius:999px;padding:12px 19px;background:#e8e8ed;color:#1d1d1f;font-weight:650;cursor:pointer}
+.page-link-button.primary{background:#0071e3;color:#fff}
+#types-section{display:none}
+#types-section[aria-hidden="false"]{display:block}
+.types-header{max-width:790px;margin:0 auto 38px;text-align:center}
+.types-header h1{font-size:clamp(34px,6vw,56px);line-height:1.1;letter-spacing:-.045em;margin:0 0 18px}
+.types-header p{margin:0;color:var(--muted);font-size:16px;line-height:1.8}
+.type-groups{display:grid;gap:28px}
+.type-group{padding:30px;background:#fff;border-radius:28px;box-shadow:0 8px 34px rgba(0,0,0,.055)}
+.type-group-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(0,0,0,.08)}
+.type-group-title{margin:0;font-size:26px;line-height:1.25;letter-spacing:-.035em}
+.type-group-code{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:#eef7ff;color:#0066cc;font-size:13px;font-weight:700}
+.type-group-description{margin:8px 0 0;color:var(--muted);line-height:1.75}
+.type-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.type-directory-card{padding:20px;border:1px solid rgba(0,0,0,.08);border-radius:20px;background:#fafafd}
+.type-directory-code{font-size:28px;font-weight:780;letter-spacing:-.04em;color:#0071e3;line-height:1}
+.type-directory-name{margin-top:10px;font-size:17px;font-weight:700;line-height:1.45}
+.type-directory-summary{margin:10px 0 0;color:#515154;line-height:1.72;font-size:14px}
+.types-footer{margin-top:28px}
+@media(max-width:640px){
+  .result-card .info-list li + li{margin-top:4px}
+  .result-card > .section-lead + .info-list,.result-card > p + .info-list{margin-top:20px}
+  .type-group{padding:22px 18px;border-radius:24px}
+  .type-group-header{display:block;margin-bottom:20px}
+  .type-group-code{display:inline-flex;margin-top:12px}
+  .type-card-grid{grid-template-columns:1fr}
+  .type-directory-card{padding:18px}
+}
+</style>
+
+
+<style>
+/* v13: unified list rhythm and four-group themes */
+.result-card .info-list,
+.result-card .career-list{
+  display:grid;
+  gap:6px 28px !important;
+  margin:0;
+}
+.result-card .info-list li,
+.result-card .career-list li,
+.result-card .info-list li + li,
+.result-card .career-list li + li{
+  margin:0 !important;
+  line-height:1.65;
+}
+.result-card > .section-lead + .info-list,
+.result-card > p + .info-list{
+  margin-top:22px;
+}
+.career-list{grid-template-columns:repeat(2,minmax(0,1fr));}
+
+/* Theme tokens */
+#result-section.theme-nt{--theme-deep:#6842b8;--theme-mid:#8d67d5;--theme-light:#f5f0ff;--theme-line:#d9caef;}
+#result-section.theme-nf{--theme-deep:#26845f;--theme-mid:#48aa7d;--theme-light:#eef9f3;--theme-line:#c7e7d7;}
+#result-section.theme-sj{--theme-deep:#176bb5;--theme-mid:#3f91d5;--theme-light:#eef6fd;--theme-line:#c8def0;}
+#result-section.theme-sp{--theme-deep:#bd651c;--theme-mid:#e08a3a;--theme-light:#fff5e9;--theme-line:#f0d3b3;}
+#result-section[class*="theme-"] .result-hero{
+  background:var(--theme-mid);
+  box-shadow:0 18px 48px color-mix(in srgb,var(--theme-deep) 26%,transparent);
+}
+#result-section[class*="theme-"] .result-card{background:#fff;border-color:var(--theme-line);}
+#result-section[class*="theme-"] .result-card h2,
+#result-section[class*="theme-"] .sub-code{color:var(--theme-deep);}
+#result-section[class*="theme-"] .axis-result,
+#result-section[class*="theme-"] .axis-reason{background:var(--theme-light);color:var(--theme-deep);}
+#result-section[class*="theme-"] .axis-marker{background:var(--theme-deep);box-shadow:0 2px 9px color-mix(in srgb,var(--theme-deep) 35%,transparent);}
+
+.type-group[data-theme="nt"]{--group-deep:#6842b8;--group-light:#f5f0ff;--group-line:#d9caef;}
+.type-group[data-theme="nf"]{--group-deep:#26845f;--group-light:#eef9f3;--group-line:#c7e7d7;}
+.type-group[data-theme="sj"]{--group-deep:#176bb5;--group-light:#eef6fd;--group-line:#c8def0;}
+.type-group[data-theme="sp"]{--group-deep:#bd651c;--group-light:#fff5e9;--group-line:#f0d3b3;}
+.type-group[data-theme]{background:#fff;border:1px solid var(--group-line);}
+.type-group[data-theme] .type-group-title,
+.type-group[data-theme] .type-directory-code{color:var(--group-deep);}
+.type-group[data-theme] .type-group-code{background:var(--group-light);color:var(--group-deep);border:1px solid var(--group-line);}
+.type-group[data-theme] .type-directory-card{background:color-mix(in srgb,var(--group-light) 62%,#fff);border-color:var(--group-line);}
+@media(max-width:640px){
+  .career-list{grid-template-columns:1fr;}
+  .result-card .info-list,.result-card .career-list{gap:5px !important;}
+  .result-card > .section-lead + .info-list,.result-card > p + .info-list{margin-top:20px;}
+}
+</style>
+
+
+
+
+<style>
+/* v14.5: fixed progress keeps its width; background spans the viewport */
+#quiz-section .hero{margin-bottom:24px}
+#quiz-section .hero .page-link-row{margin-top:24px}
+#progress-sticky-sentinel{width:100%;height:1px;margin-top:18px}
+#quiz-section .hero .progress-wrap{
+  position:relative !important;
+  width:100%;
+  margin:0;
+  padding:12px 0 14px;
+  background:rgba(245,245,247,.96);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  box-shadow:none;
+}
+#quiz-section .progress-wrap.is-viewport-fixed{
+  position:fixed !important;
+  top:0;
+  transform:none;
+  z-index:1000;
+  margin:0;
+  padding:12px 0 14px;
+  background:transparent;
+  border-bottom:0;
+  box-shadow:none;
+  isolation:isolate;
+}
+#quiz-section .progress-wrap.is-viewport-fixed::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  z-index:-1;
+  background:rgba(245,245,247,.96);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  box-shadow:0 6px 18px rgba(0,0,0,.055);
+  pointer-events:none;
+}
+#progress-fixed-placeholder{display:none;width:100%}
+#progress-fixed-placeholder.is-active{display:block}
+@media(max-width:760px){
+  #progress-sticky-sentinel{margin-top:16px}
+  #quiz-section .hero .progress-wrap{padding:10px 0 12px}
+  #quiz-section .progress-wrap.is-viewport-fixed{
+    padding:10px 0 12px;
+  }
+}
+</style>
+
+
+<style>
+/* v15: product-design strength and adjacent domains */
+.product-strength-card{
+  position:relative;
+  overflow:hidden;
+}
+.product-strength-card::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  right:-54px;
+  bottom:-70px;
+  border-radius:50%;
+  background:var(--theme-light,#eef7ff);
+  opacity:.9;
+  pointer-events:none;
+}
+.product-strength-value{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  min-height:54px;
+  padding:11px 18px;
+  border:1px solid var(--theme-line,#c8def0);
+  border-radius:16px;
+  background:var(--theme-light,#eef7ff);
+  color:var(--theme-deep,#0066cc);
+  font-size:clamp(23px,4vw,31px);
+  font-weight:780;
+  line-height:1.25;
+  letter-spacing:-.035em;
+}
+.product-strength-note{
+  position:relative;
+  z-index:1;
+  margin-top:16px!important;
+  color:var(--muted)!important;
+  font-size:13px;
+}
+.domain-list{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px 24px!important;
+}
+.domain-list li{
+  padding:10px 12px 10px 30px!important;
+  border-radius:14px;
+  background:var(--theme-light,#f7f7fa);
+  border:1px solid var(--theme-line,rgba(0,0,0,.08));
+  list-style-position:inside;
+}
+.type-profile-section{
+  margin-top:18px;
+  padding-top:17px;
+  border-top:1px solid rgba(0,0,0,.08);
+}
+.type-profile-strength{
+  margin-top:20px;
+}
+.type-profile-label{
+  margin-bottom:8px;
+  color:#6e6e73;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.5;
+  letter-spacing:.015em;
+}
+.type-profile-value{
+  display:inline-flex;
+  padding:7px 11px;
+  border:1px solid var(--group-line,rgba(0,0,0,.08));
+  border-radius:11px;
+  background:var(--group-light,#eef7ff);
+  color:var(--group-deep,#0066cc);
+  font-size:17px;
+  font-weight:760;
+  line-height:1.35;
+}
+.type-profile-domains{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.type-profile-domains li{
+  padding:6px 9px;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  color:#454549;
+  font-size:12px;
+  line-height:1.4;
+}
+@media(max-width:640px){
+  .domain-list{grid-template-columns:1fr;}
+  .product-strength-value{font-size:24px;}
+}
+</style>
+
+
+<style>
+/* v16: return added sections to the original visual language */
+.product-strength-card{
+  position:static;
+  overflow:visible;
+}
+.product-strength-card::after{
+  display:none;
+}
+.product-strength-value{
+  display:block;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  color:#1d1d1f;
+  font-size:22px;
+  font-weight:760;
+  line-height:1.45;
+  letter-spacing:-.025em;
+}
+.product-strength-note{
+  margin-top:10px!important;
+  color:var(--muted)!important;
+  font-size:13px;
+}
+.domain-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px 28px!important;
+  margin:0;
+}
+.domain-list li{
+  padding-left:.25em!important;
+  border:0;
+  border-radius:0;
+  background:none;
+  list-style:disc;
+  line-height:1.65;
+}
+.type-profile-section{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid rgba(0,0,0,.08);
+}
+.type-profile-label{
+  margin-bottom:7px;
+  color:#6e6e73;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.5;
+}
+.type-profile-value{
+  display:block;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  color:#1d1d1f;
+  font-size:16px;
+  font-weight:740;
+  line-height:1.5;
+}
+.type-profile-domains{
+  display:block;
+  margin:0;
+  padding-left:1.25em;
+  list-style:disc;
+}
+.type-profile-domains li{
+  margin:4px 0 0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  color:#454549;
+  font-size:13px;
+  line-height:1.55;
+}
+@media(max-width:640px){
+  .domain-list{grid-template-columns:1fr;}
+  .product-strength-value{font-size:20px;}
+}
+</style>
+
+
+<style>
+/* v17: wide strength card; domains and risks aligned */
+.product-strength-card{
+  padding-top:32px;
+  padding-bottom:32px;
+}
+.product-strength-value{
+  font-size:clamp(27px,4vw,36px);
+  line-height:1.35;
+}
+.product-strength-note{
+  max-width:700px;
+}
+.domains-risks-row{
+  align-items:stretch;
+}
+.domains-risks-row > .result-card{
+  height:100%;
+}
+.domains-risks-row .info-list,
+.domains-risks-row .domain-list{
+  display:grid!important;
+  grid-template-columns:1fr;
+  gap:0!important;
+  margin:0;
+  padding-left:1.25em;
+}
+.domains-risks-row .info-list li,
+.domains-risks-row .domain-list li,
+.domains-risks-row .info-list li + li,
+.domains-risks-row .domain-list li + li{
+  margin:0!important;
+  padding-left:.25em!important;
+  border:0;
+  border-radius:0;
+  background:none;
+  list-style:disc;
+  line-height:1.65;
+}
+.domains-risks-row .info-list li + li,
+.domains-risks-row .domain-list li + li{
+  margin-top:5px!important;
+}
+@media(max-width:720px){
+  .product-strength-card{
+    padding-top:26px;
+    padding-bottom:26px;
+  }
+  .product-strength-value{
+    font-size:25px;
+  }
+}
+</style>
+
+
+<style>
+/* v18: exact list rhythm match between domains and risks */
+.domains-risks-row #domain-list,
+.domains-risks-row #risk-list{
+  display:block!important;
+  margin:0!important;
+  padding-left:1.25em!important;
+}
+.domains-risks-row #domain-list li,
+.domains-risks-row #risk-list li{
+  display:list-item!important;
+  margin:0!important;
+  padding:0 0 0 .25em!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  list-style-position:outside!important;
+  line-height:1.65!important;
+}
+.domains-risks-row #domain-list li + li,
+.domains-risks-row #risk-list li + li{
+  margin-top:5px!important;
+}
+</style>
+
+
+<style>
+/* v24: interactive states for primary action buttons */
+button,
+.button,
+.btn,
+a.button,
+a.btn {
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+a.button:hover,
+a.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.10);
+}
+
+button:active,
+.button:active,
+.btn:active,
+a.button:active,
+a.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+}
+
+button:focus-visible,
+.button:focus-visible,
+.btn:focus-visible,
+a.button:focus-visible,
+a.btn:focus-visible {
+  outline: 3px solid rgba(36,87,214,.28);
+  outline-offset: 3px;
+}
+
+/* Primary buttons */
+#submit-btn:hover,
+#result-btn:hover,
+button[type="submit"]:hover {
+  background-color: #173fae !important;
+  border-color: #173fae !important;
+}
+
+/* Secondary actions: type directory / restart */
+#show-types-btn:hover,
+#restart-btn:hover,
+#retry-btn:hover {
+  background-color: #eef3ff !important;
+  color: #173fae !important;
+  border-color: #9fb4ef !important;
+}
+
+/* Fallback targeting by common action classes */
+.actions .secondary:hover,
+.result-actions .secondary:hover {
+  background-color: #eef3ff !important;
+  color: #173fae !important;
+  border-color: #9fb4ef !important;
+}
+</style>
+
+
+<style>
+/* v25: stronger hover contrast for gray secondary buttons */
+#show-types-btn:hover,
+#restart-btn:hover,
+#retry-btn:hover,
+.actions .secondary:hover,
+.result-actions .secondary:hover {
+  background-color: #2f3a4a !important;
+  color: #ffffff !important;
+  border-color: #2f3a4a !important;
+  box-shadow: 0 8px 20px rgba(47,58,74,.22) !important;
+}
+
+#show-types-btn:active,
+#restart-btn:active,
+#retry-btn:active,
+.actions .secondary:active,
+.result-actions .secondary:active {
+  background-color: #232b37 !important;
+  color: #ffffff !important;
+  border-color: #232b37 !important;
+}
+</style>
+
+
+<style>
+/* v26: exact selectors for secondary action buttons */
+#open-types-from-quiz,
+#open-types-from-result,
+#restart-button {
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease !important;
+}
+
+#open-types-from-quiz:hover,
+#open-types-from-result:hover,
+#restart-button:hover {
+  background-color: #2f3a4a !important;
+  color: #ffffff !important;
+  border-color: #2f3a4a !important;
+transform: translateY(-1px) !important;
+}
+
+#open-types-from-quiz:active,
+#open-types-from-result:active,
+#restart-button:active {
+  background-color: #232b37 !important;
+  color: #ffffff !important;
+  border-color: #232b37 !important;
+transform: translateY(0) !important;
+}
+
+#open-types-from-quiz:focus-visible,
+#open-types-from-result:focus-visible,
+#restart-button:focus-visible {
+  outline: 3px solid rgba(47,58,74,.28) !important;
+  outline-offset: 3px !important;
+}
+</style>
+
+
+<style>
+/* v28: explicitly remove inherited hover/active shadows */
+#open-types-from-quiz:hover,
+#open-types-from-result:hover,
+#restart-button:hover,
+#open-types-from-quiz:active,
+#open-types-from-result:active,
+#restart-button:active {
+  box-shadow: none !important;
+}
+</style>
+
+<style>
+.measurement-note{display:inline-block;margin-top:8px;font-size:12px;color:#667085}
+</style>
+
+<style>
+/* v31: readable multiple subtype cards */
+.subtype-card{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:14px;
+  align-items:start;
+  padding:16px 0;
+  border-top:1px solid #e5e7eb;
+}
+.subtype-card:first-child{
+  margin-top:8px;
+}
+.subtype-card__code{
+  min-width:64px;
+  padding:6px 10px;
+  border:1px solid #d0d5dd;
+  border-radius:8px;
+  background:#f8fafc;
+  color:#344054;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+  text-align:center;
+}
+.subtype-card__name{
+  margin:0 0 4px;
+  font-size:16px;
+  line-height:1.4;
+}
+.subtype-card__summary{
+  margin:0;
+  color:#667085;
+  font-size:14px;
+  line-height:1.7;
+}
+</style>
+
+
+<style>
+/* v33: align subtype heading and place each boundary score under its subtype */
+#sub-type-container,
+#sub-type-container > *,
+#sub-type-name,
+#sub-type-desc,
+#sub-axis-reason {
+  text-align:left !important;
+}
+
+#sub-type-name,
+#sub-type-desc,
+#sub-axis-reason {
+  margin-left:0 !important;
+  padding-left:0 !important;
+}
+
+.subtype-card__axis {
+  margin:10px 0 0;
+  color:#475467;
+  font-size:12px;
+  font-weight:600;
+  line-height:1.5;
+}
+
+.single-subtype__summary {
+  margin:0;
+  color:inherit;
+  font-size:inherit;
+  line-height:inherit;
+}
+</style>
+
+
+<style>
+/* v39: based directly on v33; do not alter the サブタイプ heading */
+
+/* In the multiple-subtype state, remove only the empty code column and its flex gap. */
+#sub-type-container.is-multiple-subtype .sub-header{
+  gap:0;
+}
+#sub-type-container.is-multiple-subtype #sub-type-code{
+  display:none;
+}
+
+/* Match each boundary score label to the current NT/NF/SJ/SP category colors. */
+#result-section[class*="theme-"] .subtype-card__axis{
+  display:inline-block;
+  width:auto;
+  margin:10px 0 0;
+  padding:7px 10px;
+  border-radius:8px;
+  background:var(--theme-light);
+  color:var(--theme-deep);
+  font-size:13px;
+  font-weight:700;
+  line-height:1.5;
+}
+</style>
+
+
+<style>
+#sub-type-container{display:none!important;}
+</style>
+
 </head>
 <body>
-
-<div class="header-area">
-    <h1>DESIGN HISTORY TIMELINE</h1>
-    <div class="instruction">バーの長さが期間を表します。ホバーで詳細表示 / 右へスクロール ➔</div>
-</div>
-
-<div class="scroll-wrapper">
-    <div class="map-container">
-
-        <!-- 年代ヘッダー (1850年=0px, 1年=20px, 10年=200px) -->
-        <div class="timeline-header">
-            <span class="year-marker" style="left: 200px;">1860</span>
-            <span class="year-marker" style="left: 400px;">1870</span>
-            <span class="year-marker" style="left: 600px;">1880</span>
-            <span class="year-marker" style="left: 800px;">1890</span>
-            <span class="year-marker" style="left: 1000px;">1900</span>
-            <span class="year-marker" style="left: 1200px;">1910</span>
-            <span class="year-marker" style="left: 1400px;">1920</span>
-            <span class="year-marker" style="left: 1600px;">1930</span>
-            <span class="year-marker" style="left: 1800px;">1940</span>
-            <span class="year-marker" style="left: 2000px;">1950</span>
-            <span class="year-marker" style="left: 2200px;">1960</span>
-            <span class="year-marker" style="left: 2400px;">1970</span>
-            <span class="year-marker" style="left: 2600px;">1980</span>
-            <span class="year-marker" style="left: 2800px;">1990</span>
-            <span class="year-marker" style="left: 3000px;">2000</span>
-            <span class="year-marker" style="left: 3200px;">2010</span>
-            <span class="year-marker" style="left: 3400px;">2020</span>
-            <span class="year-marker" style="left: 3600px;">現在</span>
-        </div>
-
-        <!-- 地域ラベル（Y軸のレーン区切り） -->
-        <div class="region-label" style="top: 80px; border-color: var(--c-jp)">JAPAN</div>
-        <div class="region-label" style="top: 360px; border-color: var(--c-uk)">UK</div>
-        <div class="region-label" style="top: 480px; border-color: var(--c-eu)">EUROPE</div>
-        <div class="region-label" style="top: 760px; border-color: var(--c-de)">GERMANY</div>
-        <div class="region-label" style="top: 1040px; border-color: var(--c-no)">NORDIC</div>
-        <div class="region-label" style="top: 1160px; border-color: var(--c-us)">US</div>
-        <div class="region-label" style="top: 1440px; border-color: var(--c-gl-prod)">GLOBAL (モノ・造形)</div>
-        <div class="region-label" style="top: 1720px; border-color: var(--c-gl-serv)">GLOBAL (コト・意義)</div>
-
-        <!-- 関係性を示す線 (SVG) -->
-        <svg>
-            <defs>
-                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#cbd5e1"/>
-                </marker>
-            </defs>
-
-            <!-- 中心座標 (Y + 22) を基準に線を引く -->
-            
-            <!-- ジャポニスム(600, 142) -> アーツ&クラフツ(600, 422) -->
-            <path class="path-line" d="M 600 142 L 600 422" />
-            <!-- A&C(900, 422) -> アールヌーヴォー(900, 542) -->
-            <path class="path-line" d="M 900 422 L 900 542" />
-            <!-- A&C(1140, 422) -> 工作連盟(1140, 822) -->
-            <path class="path-line" d="M 1140 422 C 1140 600, 1140 600, 1140 822" />
-            <!-- A&C(1400, 422) -> 民藝(1400, 222) -->
-            <path class="path-line" d="M 1400 422 C 1400 300, 1400 300, 1400 222" />
-            <!-- アールヌーヴォー(1200, 542) -> デ・ステイル(1300, 622) -->
-            <path class="path-line" d="M 1200 542 C 1250 542, 1250 622, 1300 622" />
-            <!-- 工作連盟(1380, 822) -> バウハウス(1380, 902) -->
-            <path class="path-line" d="M 1380 822 L 1380 902" />
-            <!-- バウハウス(1500, 902) -> インターナショナル(1500, 1222) -->
-            <path class="path-line" d="M 1500 902 C 1500 1100, 1500 1100, 1500 1222" />
-            <!-- 工作連盟(1600, 822) -> スカンジナビアン(1600, 1102) -->
-            <path class="path-line" d="M 1600 822 C 1600 950, 1600 950, 1600 1102" />
-            <!-- インターナショナル(1650, 1222) -> スタイリング(1650, 1302) -->
-            <path class="path-line" d="M 1650 1222 L 1650 1302" />
-            <!-- バウハウス(1660, 902) -> ウルム(2060, 982) -->
-            <path class="path-line" d="M 1660 902 C 1800 902, 1800 982, 2060 982" />
-            <!-- スタイリング(1850, 1302) -> ミッドセンチュリー(1850, 1382) -->
-            <path class="path-line" d="M 1850 1302 L 1850 1382" />
-            <!-- 民藝(1900, 222) -> 戦後日本(1900, 302) -->
-            <path class="path-line" d="M 1900 222 L 1900 302" />
-            <!-- ウルム(2200, 982) -> ポストモダン(2400, 702) -->
-            <path class="path-line" d="M 2200 982 C 2300 982, 2300 702, 2400 702" />
-            <!-- ウルム(2300, 982) -> 現代モダン(2800, 1502) -->
-            <path class="path-line" d="M 2300 982 C 2500 982, 2500 1502, 2800 1502" />
-            <!-- スタイリング(1950, 1302) -> デザイン思考(2800, 1782) -->
-            <path class="path-line" d="M 1950 1302 C 2300 1302, 2300 1782, 2800 1782" />
-            <!-- ポストモダン(2700, 702) -> コンテンポラリー(3000, 1582) -->
-            <path class="path-line" d="M 2700 702 C 2850 702, 2850 1582, 3000 1582" />
-            <!-- デザイン思考(3000, 1782) -> スペキュラティヴ(3100, 1862) -->
-            <path class="path-line" d="M 3000 1782 C 3050 1782, 3050 1862, 3100 1862" />
-            <!-- コンテンポラリー(3150, 1582) -> コレクティブ(3200, 1662) -->
-            <path class="path-line" d="M 3150 1582 C 3175 1582, 3175 1662, 3200 1662" />
-            <!-- スペキュラティヴ(3150, 1862) -> ビジョン(3200, 1942) -->
-            <path class="path-line" d="M 3150 1862 C 3175 1862, 3175 1942, 3200 1942" />
-        </svg>
-
-        <!-- 影響アノテーション -->
-        <div class="annotation" style="left: 610px; top: 250px;">浮世絵等の自然モチーフ・非対称性が、欧州の自然回帰を後押し</div>
-        <div class="annotation" style="left: 910px; top: 480px;">手仕事から発展し、鉄やガラス等を用いて植物曲線を表現</div>
-        <div class="annotation" style="left: 1150px; top: 620px;">手仕事の限界から機械生産を肯定し、工業製品の品質向上へ</div>
-        <div class="annotation" style="left: 1410px; top: 320px;">「生活と芸術の統合」に共鳴し、日本の名もなき日用品（用の美）を再評価</div>
-        <div class="annotation" style="left: 1210px; top: 580px;">有機的な過剰装飾への反発から、幾何学的な抽象化へ向かう</div>
-        <div class="annotation" style="left: 1390px; top: 850px;">産業と芸術の統合を、デザイン教育として体系化</div>
-        <div class="annotation" style="left: 1510px; top: 1050px;">弾圧による亡命。理念が資本主義と結びつき世界を均質化</div>
-        <div class="annotation" style="left: 1610px; top: 950px;">機能主義を取り入れつつ、風土に根ざした「自然素材」を重視</div>
-        <div class="annotation" style="left: 1660px; top: 1250px;">合理性より「消費者の購買意欲を煽る外観」を追求し商業化</div>
-        <div class="annotation" style="left: 1750px; top: 930px;">芸術性を排し、徹底した科学的・システム的設計へ</div>
-        <div class="annotation" style="left: 1860px; top: 1330px;">合理主義と米国の商業的軽快さが、FRP等の新技術上で融合</div>
-        <div class="annotation" style="left: 1910px; top: 250px;">民藝の美意識が、高度経済成長期のインダストリアルデザインを支える</div>
-        <div class="annotation" style="left: 2210px; top: 820px;">冷酷な合理主義への息苦しさから、装飾・色彩・ユーモアが爆発</div>
-        <div class="annotation" style="left: 2350px; top: 1150px;">厳格なシステム構築が、IT機器等をシンプルに見せるミニマリズムへ継承</div>
-        <div class="annotation" style="left: 2000px; top: 1550px;">外観の差別化から、無形の「顧客体験（UX）」全体の設計へシフト</div>
-        <div class="annotation" style="left: 2750px; top: 1100px;">絶対的基準が解体され、多様で個人的な表現へ拡張</div>
-        <div class="annotation" style="left: 3010px; top: 1810px;">「課題解決」万能視への危惧から、社会への「問題提起」へ役割を転換</div>
-        <div class="annotation" style="left: 3160px; top: 1610px;">多様な表現がアート市場と交差し、一点物としての価値を持つ</div>
-        <div class="annotation" style="left: 3160px; top: 1890px;">未来への問いを、社会や企業の「存在意義・移行プロセス」の設計へ実装</div>
-
-
-        <!-- ============================================== -->
-        <!-- ノードバー (X = (年-1850)*20, Width = 期間*20 ) -->
-        <!-- ============================================== -->
-
-        <!-- JAPAN -->
-        <!-- ジャポニスム (1860-1900) -->
-        <div class="node-bar" style="left: 200px; top: 120px; width: 800px;">
-            <div class="node-dot" style="background: var(--c-jp)"></div>
-            <div class="node-title">ジャポニスム</div><div class="node-duration">1860s-1900s</div>
-            <div class="tooltip">開国に伴い浮世絵や工芸品が欧州へ流出。非対称性や自然モチーフが西洋美術に衝撃を与えた。</div>
-        </div>
-        <!-- 民藝運動 (1920-1970) -->
-        <div class="node-bar" style="left: 1400px; top: 200px; width: 1000px;">
-            <div class="node-dot" style="background: var(--c-jp)"></div>
-            <div class="node-title">民藝運動</div><div class="node-duration">1920s-</div>
-            <div class="tooltip">柳宗悦らが提唱。名もなき職人による日用品に美を見出す「用の美」を追求。</div>
-        </div>
-        <!-- 戦後日本 (1950-1980) -->
-        <div class="node-bar" style="left: 2000px; top: 280px; width: 600px;">
-            <div class="node-dot" style="background: var(--c-jp)"></div>
-            <div class="node-title">戦後インダストリアル</div><div class="node-duration">1950s-1970s</div>
-            <div class="tooltip">高度経済成長を支えたデザイン。機能主義と日本の伝統的な美意識がハイブリッドに融合。</div>
-        </div>
-
-        <!-- UK -->
-        <!-- アーツ&クラフツ (1880-1920) -->
-        <div class="node-bar" style="left: 600px; top: 400px; width: 800px;">
-            <div class="node-dot" style="background: var(--c-uk)"></div>
-            <div class="node-title">アーツ＆クラフツ運動</div><div class="node-duration">1880s-1920s</div>
-            <div class="tooltip">産業革命の粗悪な大量生産に反発。手仕事と職人技の復興、「生活と芸術の統合」を目指した。近代デザインの原点。</div>
-        </div>
-
-        <!-- EUROPE -->
-        <!-- アールヌーヴォー (1890-1910) -->
-        <div class="node-bar" style="left: 800px; top: 520px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-eu)"></div>
-            <div class="node-title">アール・ヌーヴォー</div><div class="node-duration">1890s-1910s</div>
-            <div class="tooltip">植物などの有機的なモチーフと曲線を多用した新しい装飾様式。</div>
-        </div>
-        <!-- デステイル等 (1910-1930) -->
-        <div class="node-bar" style="left: 1200px; top: 600px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-eu)"></div>
-            <div class="node-title">デ・ステイル / アール・デコ</div><div class="node-duration">1910s-1930s</div>
-            <div class="tooltip">幾何学的な抽象化と、直線的で大衆消費社会に向けたデザイン。</div>
-        </div>
-        <!-- ポストモダン (1970-1990) -->
-        <div class="node-bar" style="left: 2400px; top: 680px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-eu)"></div>
-            <div class="node-title">ポストモダン</div><div class="node-duration">1970s-1980s</div>
-            <div class="tooltip">鮮やかな色彩、装飾性、ユーモアを取り戻す。冷たい合理主義への強烈なアンチテーゼ。</div>
-        </div>
-
-        <!-- GERMANY -->
-        <!-- 工作連盟 (1907-1934) -->
-        <div class="node-bar" style="left: 1140px; top: 800px; width: 540px;">
-            <div class="node-dot" style="background: var(--c-de)"></div>
-            <div class="node-title">ドイツ工作連盟</div><div class="node-duration">1907-1934</div>
-            <div class="tooltip">芸術家と産業界が協力し、良質な工業製品を作ることを目指す。</div>
-        </div>
-        <!-- バウハウス (1919-1933) -->
-        <div class="node-bar" style="left: 1380px; top: 880px; width: 280px;">
-            <div class="node-dot" style="background: var(--c-de)"></div>
-            <div class="node-title">バウハウス</div><div class="node-duration">1919-1933</div>
-            <div class="tooltip">「形態は機能に従う」。工業生産を前提とした合理的で機能的なデザイン教育の基礎を築く。</div>
-        </div>
-        <!-- ウルム (1953-1968) -->
-        <div class="node-bar" style="left: 2060px; top: 960px; width: 300px;">
-            <div class="node-dot" style="background: var(--c-de)"></div>
-            <div class="node-title">ウルム造形大学</div><div class="node-duration">1953-1968</div>
-            <div class="tooltip">芸術性や商業的スタイリングを徹底排除し、科学的・システム的なデザイン手法を確立。</div>
-        </div>
-
-        <!-- NORDIC -->
-        <!-- スカンジナビアン (1930-) -->
-        <div class="node-bar" style="left: 1600px; top: 1080px; width: 2000px;">
-            <div class="node-dot" style="background: var(--c-no)"></div>
-            <div class="node-title">スカンジナビアン・デザイン</div><div class="node-duration">1930s-現在</div>
-            <div class="tooltip">自然素材（木材）を重んじ、温かみのある機能主義。長く使える普遍的なデザイン。</div>
-        </div>
-
-        <!-- US -->
-        <!-- インターナショナル (1920-1970) -->
-        <div class="node-bar" style="left: 1400px; top: 1200px; width: 1000px;">
-            <div class="node-dot" style="background: var(--c-us)"></div>
-            <div class="node-title">インターナショナル・スタイル</div><div class="node-duration">1920s-1970s</div>
-            <div class="tooltip">地域性や装飾を排除した普遍的な様式。ガラスや鉄を多用。</div>
-        </div>
-        <!-- スタイリング (1930-1950) -->
-        <div class="node-bar" style="left: 1600px; top: 1280px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-us)"></div>
-            <div class="node-title">スタイリング・デザイン</div><div class="node-duration">1930s-1950s</div>
-            <div class="tooltip">流線型など、消費者の購買意欲を煽るために外観に新しさを付与する商業デザイン。</div>
-        </div>
-        <!-- ミッドセンチュリー (1940-1960) -->
-        <div class="node-bar" style="left: 1800px; top: 1360px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-us)"></div>
-            <div class="node-title">ミッドセンチュリー・モダン</div><div class="node-duration">1940s-1960s</div>
-            <div class="tooltip">FRPや成型合板など新素材を活用。機能性とスタイリングの軽快さが融合。</div>
-        </div>
-
-        <!-- GLOBAL (PROD) -->
-        <!-- 現代モダン (1990-) -->
-        <div class="node-bar" style="left: 2800px; top: 1480px; width: 800px;">
-            <div class="node-dot" style="background: var(--c-gl-prod)"></div>
-            <div class="node-title">現代のモダンデザイン</div><div class="node-duration">1990s-現在</div>
-            <div class="tooltip">機能主義やミニマリズムが交差。テクノロジーと融合し洗練された日常の美を追求。</div>
-        </div>
-        <!-- コンテンポラリー (2000-) -->
-        <div class="node-bar" style="left: 3000px; top: 1560px; width: 600px;">
-            <div class="node-dot" style="background: var(--c-gl-prod)"></div>
-            <div class="node-title">コンテンポラリーデザイン</div><div class="node-duration">2000s-現在</div>
-            <div class="tooltip">表現の自由を拡張。最新技術を用い、スタイルに縛られず多様な価値観を表現する。</div>
-        </div>
-        <!-- コレクティブ (2010-) -->
-        <div class="node-bar" style="left: 3200px; top: 1640px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-gl-prod)"></div>
-            <div class="node-title">コレクティブデザイン</div><div class="node-duration">2010s-現在</div>
-            <div class="tooltip">手仕事の価値が現代アート市場と結びつく。ギャラリーで扱われる一点物の収集作品群。</div>
-        </div>
-
-        <!-- GLOBAL (SERV) -->
-        <!-- デザイン思考 (1990-) -->
-        <div class="node-bar" style="left: 2800px; top: 1760px; width: 800px;">
-            <div class="node-dot" style="background: var(--c-gl-serv)"></div>
-            <div class="node-title">デザイン思考 / サービスデザイン</div><div class="node-duration">1990s-現在</div>
-            <div class="tooltip">デザインをビジネスの課題解決に応用。プロダクト単体ではなく無形の顧客体験（UX）やサービスを設計。</div>
-        </div>
-        <!-- スペキュラティヴ (2005-) -->
-        <div class="node-bar" style="left: 3100px; top: 1840px; width: 500px;">
-            <div class="node-dot" style="background: var(--c-gl-serv)"></div>
-            <div class="node-title">スペキュラティヴ・デザイン</div><div class="node-duration">2005s-現在</div>
-            <div class="tooltip">課題を「解決」するのではなく、問いを「提起」するデザイン。あり得る未来を提示し議論を促す。</div>
-        </div>
-        <!-- ビジョン (2010-) -->
-        <div class="node-bar" style="left: 3200px; top: 1920px; width: 400px;">
-            <div class="node-dot" style="background: var(--c-gl-serv)"></div>
-            <div class="node-title">ビジョン / トランジション</div><div class="node-duration">2010s-現在</div>
-            <div class="tooltip">企業がなぜ存在するのか、社会がどう移行していくべきかを描く。意味のイノベーションを起こす巨大な設計。</div>
-        </div>
-
+<main class="container">
+<section id="quiz-section" aria-labelledby="quiz-title" aria-hidden="false">
+  <header class="hero">
+    <h1 id="quiz-title">プロダクトデザイナータイプ診断</h1>
+    <p>GUI・UX・ハードウェア・サービスデザインを含む、プロダクト開発における「考え方」「判断のしかた」「仕事の進め方」の傾向を診断します。正解・不正解はありません。迷った場合は、より自然に行っている方を選んでください。（約5〜8分）</p>
+    <div class="page-link-row"><button id="open-types-from-quiz" class="page-link-button" type="button">16タイプ一覧を見る</button></div>
+<div id="progress-sticky-sentinel" aria-hidden="true"></div>
+    <div class="progress-wrap">
+      <div class="progress-meta"><span>回答進捗</span><span id="progress-text">0 / 60</span></div>
+      <div id="progress-bar" class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
     </div>
-</div>
+    <div id="progress-fixed-placeholder" aria-hidden="true"></div>
+  </header>
+  <form id="quiz-form" novalidate>
+    <div id="questions-container"></div>
+    <button class="submit-button" type="submit">診断結果を見る</button>
+  </form>
+</section>
+
+<section id="result-section" aria-live="polite" aria-hidden="true">
+  <header class="result-hero">
+    <div class="eyebrow">Your product designer type</div>
+    <div id="main-type-code" class="result-code" tabindex="-1"></div>
+    <div id="main-type-name" class="result-name"></div>
+    <p id="main-type-summary" class="result-summary"></p>
+    <div id="result-badge" class="badge"></div>
+  </header>
+
+  <div class="result-grid">
+    <div class="stack">
+      <article class="result-card">
+        <h2>あなたのデザイナー像</h2>
+        <p id="main-type-detail"></p>
+      </article>
+
+      <article class="result-card product-strength-card">
+        <h2>プロダクトデザインで発揮する強み</h2>
+        <div id="product-strength" class="product-strength-value"></div>
+        <p class="product-strength-note">プロダクトデザインの実務で、特に発揮しやすい専門性や役割です。</p>
+      </article>
+
+      <div class="two-col domains-risks-row">
+        <article class="result-card domains-card">
+          <h2>活躍しやすい領域</h2>
+          <ul id="domain-list" class="info-list domain-list"></ul>
+        </article>
+        <article class="result-card">
+          <h2>注意したい傾向</h2>
+          <ul id="risk-list" class="info-list"></ul>
+        </article>
+      </div>
+
+      <article id="sub-type-container" class="result-card sub-card">
+        <h2>サブタイプ</h2>
+        <div class="sub-header">
+          <div id="sub-type-code" class="sub-code"></div>
+          <div>
+            <div id="sub-type-name" class="sub-name"></div>
+            <div class="sub-note">状況によって表れやすい、もう一つの判断傾向です。</div>
+          </div>
+        </div>
+        <p id="sub-type-desc"></p>
+        <div id="sub-axis-reason" class="axis-reason"></div>
+      </article>
+    </div>
+
+    <aside class="stack">
+      <article class="result-card">
+        <h2>あなたの4つの判断傾向</h2><p class="axis-intro">丸の位置が左右どちらへ寄っているかを示します。中央に近いほど両方の傾向を状況に応じて使い分けやすく、端に近いほど一方の傾向が明確です。これは能力の優劣ではなく、判断や仕事の進め方の傾向を表します。</p>
+        <div id="axis-chart"></div>
+      </article>
+    </aside>
+  </div>
+
+  <div class="page-link-row"><button id="open-types-from-result" class="page-link-button" type="button">16タイプ一覧を見る</button></div>
+  <button id="restart-button" class="secondary-button" type="button">最初からやり直す</button>
+</section>
+
+<section id="types-section" aria-labelledby="types-title" aria-hidden="true">
+  <header class="types-header">
+    <h1 id="types-title">16タイプ一覧</h1>
+    <p>プロダクトデザインで発揮しやすい強みと、その強みを応用しやすい関連領域を、4つのデザイナーグループに分けて紹介します。</p>
+  </header>
+  <div id="type-groups" class="type-groups"></div>
+  <div class="types-footer page-link-row"><button id="close-types" class="page-link-button primary" type="button">診断に戻る</button></div>
+</section>
+</main>
+<script>
+"use strict";
+const typesData = {"INTJ": {"name": "システムの設計思想家", "summary": "製品単体ではなく、シリーズ全体や長期的な設計思想から考えるアーキテクト型です。", "detail": "あなたは、目の前の形を整えるだけでなく、製品がどのような構造で成立し、将来どのように展開されるべきかを考えるタイプです。共通プラットフォーム、モジュール構成、部品の再利用性、ブランド全体の整合性など、複数の条件を一つの設計思想にまとめる力があります。曖昧な要望を整理し、長期的に破綻しない仕組みへ落とし込むことが得意です。一方で、構造や合理性を優先しすぎると、第一印象、触感、親しみやすさといった感性的価値を後回しにすることがあります。初期段階からCMFやユーザーの感情を扱うメンバーと協働すると、構想力と完成度の両方を高められます。", "strengths": ["製品アーキテクチャ設計", "共通プラットフォーム構想", "長期的なシリーズ展開", "複雑な要件の構造化"], "risks": ["細部の感性評価を後回しにする", "構想を難しく説明しすぎる", "完成前に次の改善点へ意識が移る"], "roles": ["先行開発", "デザイン戦略", "製品体系設計", "設計責任者"], "team": "設計思想を言語化し、複数部門の判断基準をそろえる役割で力を発揮します。"}, "ENTP": {"name": "技術の仕掛け人", "summary": "新しい技術や市場の変化から、まだ存在しない製品機会を見つける発明型です。", "detail": "あなたは、新素材、新機構、センサー、製造技術などの可能性を素早く見つけ、それを新しい体験や事業機会へ結びつけるタイプです。既存の前提を疑い、複数のアイデアを組み合わせることが得意で、企画初期や探索的なプロジェクトで特に力を発揮します。周囲を巻き込みながら試作を繰り返し、議論の中から面白い方向性を見つけられます。一方で、可能性が多いほど案を広げすぎ、仕様確定や細部の詰めが遅れることがあります。実現性、優先順位、撤退条件を早い段階で決めると、アイデアを量産可能な製品へ変えやすくなります。", "strengths": ["新技術の応用発想", "新規事業・新製品企画", "コンセプト開発", "部門横断の巻き込み"], "risks": ["案を広げすぎる", "細部の完成度が後回しになる", "計画変更が多くなる"], "roles": ["先行企画", "R&D連携", "コンセプトリード", "イノベーション推進"], "team": "停滞した議論に新しい視点を持ち込み、試すべき仮説を増やす役割に向いています。"}, "INTP": {"name": "理論派の発明家", "summary": "技術原理を深く理解し、独自の構造や機構へ変える研究開発型です。", "detail": "あなたは、技術の仕組みを理解し、まだ一般化されていない原理を試作品として確かめることに強い関心を持つタイプです。新素材、機構、センシング、製造方法などを自分なりに分析し、実験を通じて可能性を検証できます。既存製品の模倣よりも、根本原理から別解を考える場面で力を発揮します。一方で、理論的に興味深いテーマへ集中しすぎると、ユーザー価値、販売条件、量産期限との接続が弱くなることがあります。検証項目を明確にし、途中成果を短い周期で共有すると、研究的な強みを製品価値へつなげやすくなります。", "strengths": ["新機構の研究", "技術検証", "実験的プロトタイピング", "原理からの再設計"], "risks": ["研究が長期化する", "説明が専門的になりすぎる", "市場条件への関心が薄くなる"], "roles": ["R&D", "技術探索", "先行試作", "機構コンセプト設計"], "team": "技術的な疑問を深掘りし、他のメンバーが見落とした実現方法を示す役割に向いています。"}, "ENTJ": {"name": "市場を動かす戦略家", "summary": "デザイン、技術、事業性を統合し、プロジェクトを勝てる形へ導く統率型です。", "detail": "あなたは、製品の魅力だけでなく、市場での勝ち筋、競合との差別化、開発資源、スケジュールまで含めて判断するタイプです。複雑なプロジェクトでも優先順位を明確にし、関係者に決断を促しながら前進させられます。デザインを経営やブランド戦略の一部として扱うことが得意です。一方で、成果を急ぐあまり、現場の迷いや感性的な違和感を十分に拾わないことがあります。重要なレビューでは、数値や進捗だけでなく、ユーザーが感じる価値やチームの納得度も確認すると、より強い製品へつながります。", "strengths": ["デザイン戦略", "大型案件の推進", "優先順位決定", "経営・市場との接続"], "risks": ["判断が速すぎる", "現場の不安を見落とす", "成果重視で表現が強くなる"], "roles": ["デザイン責任者", "プロジェクト統括", "事業開発", "ブランド戦略"], "team": "曖昧な状況で方向を決め、組織全体を成果へ向けて動かす役割に向いています。"}, "ISTJ": {"name": "構造の番人", "summary": "強度、寸法、公差、成形性を着実に管理し、設計品質を守る堅実型です。", "detail": "あなたは、製品が正しく組み上がり、壊れず、安定して量産されることを重視するタイプです。寸法、公差、肉厚、抜き勾配、部品分割、固定方法などを丁寧に確認し、曖昧な設計を具体的な仕様へ変えることができます。設計変更の履歴や検証条件を管理する力も高く、品質の基盤を支えます。一方で、実績のない表現や大胆な構造変更には慎重になりやすく、初期案の可能性を狭めることがあります。探索段階と量産段階で評価基準を分けると、堅実さを維持しながら新規性も受け入れやすくなります。", "strengths": ["詳細設計", "量産要件整理", "品質管理", "設計標準化"], "risks": ["未知の案に慎重になりすぎる", "細部へ集中し全体像を見失う", "変更に時間がかかる"], "roles": ["量産設計", "設計品質保証", "金型・成形連携", "仕様管理"], "team": "設計上の抜けやリスクを早期に発見し、品質基準を守る役割に向いています。"}, "ISTP": {"name": "孤高のハッカー", "summary": "手を動かしながら構造を理解し、素早く機能する試作品へ変える実践型です。", "detail": "あなたは、図面上だけで考えるよりも、実物を分解し、加工し、組み直しながら答えを見つけるタイプです。可動機構、ヒンジ、ロック、収納構造など、触って初めて分かる問題を短時間で解決できます。工具や3Dプリンターを使った即応力が高く、現場でのトラブルにも強みがあります。一方で、解決方法が個人の経験に依存しやすく、設計意図や再現条件が文書化されないことがあります。試作の狙い、変更点、判断理由を簡潔に残すことで、個人技をチームの資産へ変えられます。", "strengths": ["機構試作", "現物調整", "トラブルシューティング", "短期プロトタイピング"], "risks": ["記録を省きやすい", "長期計画に関心が向きにくい", "個人作業へ閉じやすい"], "roles": ["プロトタイパー", "機構設計", "現場改善", "試作リード"], "team": "議論を実物に変え、動くものを見せて判断を前進させる役割に向いています。"}, "ESTP": {"name": "現場主義のタフガイ", "summary": "現場の制約を素早く把握し、交渉と判断で量産まで押し切る実行型です。", "detail": "あなたは、設計室だけでなく、工場、ベンダー、評価現場などで起きる問題に強いタイプです。予期せぬ不具合や条件変更にも動じず、関係者と直接話しながら現実的な解決策を見つけます。意思決定が速く、短納期や緊急対応で力を発揮します。一方で、目の前の問題解決を優先するあまり、長期的な設計思想や記録が不足することがあります。暫定対応と恒久対応を分け、後から設計ルールへ反映する仕組みを持つと、現場力が組織の強みに変わります。", "strengths": ["量産トラブル対応", "工場・ベンダー交渉", "短納期対応", "現場判断"], "risks": ["長期課題を後回しにする", "場当たり的な対応が増える", "検証前に決断する"], "roles": ["量産立ち上げ", "現場統括", "サプライヤー連携", "改善推進"], "team": "現実的な着地点を見つけ、停滞した案件を動かす役割に向いています。"}, "ESTJ": {"name": "プロジェクトの推進責任者", "summary": "品質、コスト、納期を管理し、複数部門を確実に量産へ導く管理型です。", "detail": "あなたは、目標、担当、期限、判断基準を明確にし、プロジェクトを予定通り進めることが得意なタイプです。意匠、設計、調達、製造などの条件を整理し、実行可能な計画にまとめられます。問題が起きたときも責任範囲を明確にし、対応を前へ進めます。一方で、計画や効率を優先するほど、探索的な試行や感性的な迷いを非効率と捉えやすくなります。初期段階には試行錯誤の余白を確保し、確定後は厳密に管理するという切り分けが有効です。", "strengths": ["進行管理", "量産計画", "部門調整", "品質・コスト管理"], "risks": ["探索の余白を削りすぎる", "指示が強くなりやすい", "例外対応に厳しくなる"], "roles": ["プロジェクトマネージャー", "量産統括", "デザインマネージャー", "開発管理"], "team": "役割と期限を明確にし、チームを安定して完了へ導く役割に向いています。"}, "ISFP": {"name": "感性の探求者", "summary": "色、素材、光、触感を丁寧に調整し、製品へ愛着を生み出す感性型です。", "detail": "あなたは、製品に触れた瞬間の温度感、光の反射、表面の細かな質感、色の深みなど、数値だけでは説明しにくい価値を見分けるタイプです。CMF、表面処理、形状の微調整を通じて、ユーザーが自然に好感や安心感を持てる状態へ仕上げます。静かに観察しながら改善を重ねることが得意です。一方で、感覚的な判断を言葉や数値で共有することに負担を感じる場合があります。評価条件、比較サンプル、観察ポイントを簡潔に整理すると、感性をチームの共通基準へ変えられます。", "strengths": ["CMF設計", "質感評価", "造形の微調整", "感性的品質向上"], "risks": ["判断根拠を説明しにくい", "細部調整に時間を使いすぎる", "交渉を避けやすい"], "roles": ["CMFデザイン", "スタイリング", "品質感設計", "プロトタイプ評価"], "team": "製品の第一印象や触れたときの質を高め、完成度を底上げする役割に向いています。"}, "ISFJ": {"name": "寄り添いの意匠家", "summary": "使う人の不安や負担を丁寧に読み取り、安心できる形へ整える配慮型です。", "detail": "あなたは、利用者がどこで迷い、怖さや不快感を覚えるかを細かく観察し、安心して使える製品へ整えるタイプです。医療、福祉、生活用品、公共機器など、使い手への配慮が品質を左右する領域で強みがあります。形、色、操作感、表示の分かりやすさを丁寧に調整できます。一方で、全員の要望を受け止めようとして、デザインの焦点が弱くなることがあります。最も守るべき利用者と使用状況を明確にすると、配慮と判断力を両立できます。", "strengths": ["ユニバーサルデザイン", "医療・福祉領域", "操作安心感", "ユーザー観察"], "risks": ["要望を受け入れすぎる", "大胆な提案を控える", "判断を一人で抱える"], "roles": ["ユーザーリサーチ", "医療機器デザイン", "生活用品設計", "アクセシビリティ設計"], "team": "利用者の不安や見落とされやすい負担を代弁する役割に向いています。"}, "ESFP": {"name": "トレンドの仕掛け人", "summary": "人の反応や市場の空気を敏感に捉え、魅力的な見た目へ変える表現型です。", "detail": "あなたは、いま人が何を新鮮と感じ、どの色や形に心を動かされるかを直感的に捉えるタイプです。売り場、SNS、ファッション、空間などから変化を読み取り、キャッチーなスタイリングへ落とし込めます。短い期間で印象を変える提案や、若い市場向けの製品で強みを発揮します。一方で、目新しさを優先すると、ブランドの継続性や長期的な耐久性が弱くなることがあります。流行要素とブランド固有要素を分けて設計すると、鮮度と一貫性を両立できます。", "strengths": ["トレンド分析", "スタイリング", "市場反応の把握", "魅力的なバリエーション提案"], "risks": ["流行に寄りすぎる", "長期的整合性が弱くなる", "評価が感覚中心になる"], "roles": ["スタイリング", "CMF企画", "コンシューマー製品", "販促連携"], "team": "市場の空気をチームへ持ち込み、製品の分かりやすい魅力を作る役割に向いています。"}, "ESFJ": {"name": "調和のコーディネーター", "summary": "利用者と関係者の声をまとめ、広く受け入れられる製品へ整える協調型です。", "detail": "あなたは、マーケティング、営業、ユーザー、開発メンバーなど、異なる立場の要望を丁寧に拾い、共通の着地点へまとめるタイプです。多くの人が安心して選べるデザインや、ブランドの信頼感を損なわない表現が得意です。コミュニケーションを通じて合意を形成できます。一方で、反対意見を避けるほど、提案が平均的になりやすい傾向があります。譲れない設計意図を一つ定め、その上で調整すると、調和と独自性を両立できます。", "strengths": ["関係者調整", "ユーザー要望整理", "安心感のある表現", "合意形成"], "risks": ["無難な案へ寄りやすい", "対立を避けすぎる", "要望過多になる"], "roles": ["デザインコーディネート", "顧客折衝", "ブランド運用", "ユーザー中心設計"], "team": "異なる立場の意見をつなぎ、チームが納得できる案へまとめる役割に向いています。"}, "INFJ": {"name": "思想を宿す造形家", "summary": "社会的な意味やブランドの哲学を、静かな造形と体験へ変える理念型です。", "detail": "あなたは、製品が未来の社会でどのような意味を持つか、使う人にどのような感情を残すかを深く考えるタイプです。派手さよりも一貫した思想や静かな存在感を重視し、ブランドの核となる製品や長期的なコンセプトで力を発揮します。抽象的な価値を造形やCMFへ落とし込めます。一方で、理想像を大切にするほど、コストやスケジュールとの妥協に強いストレスを感じることがあります。守るべき思想と変更可能な表現を分けることで、理念を失わず現実化できます。", "strengths": ["ブランド哲学の造形化", "未来洞察", "静かな高品質表現", "コンセプト統合"], "risks": ["理想を高く持ちすぎる", "説明が抽象的になる", "妥協に時間がかかる"], "roles": ["ブランドデザイン", "コンセプト設計", "先行デザイン", "ビジョン策定"], "team": "製品の存在意義を示し、短期判断に長期的な意味を与える役割に向いています。"}, "INFP": {"name": "詩的なストーリーテラー", "summary": "人の記憶や感情に残る物語を、独自の造形や体験へ変える創作型です。", "detail": "あなたは、製品を単なる道具ではなく、人の気持ちや生活の物語に関わる存在として捉えるタイプです。言葉にしにくい感情、懐かしさ、親密さ、余白などを造形や触感へ変えることができます。独自性の高いコンセプトや文化性のある製品で強みがあります。一方で、自分の中の感覚を優先しすぎると、他者が意図を理解しにくくなることがあります。ストーリーを使用場面、ユーザー行動、具体的なデザイン要素へ分解すると、独自の感性を共有しやすくなります。", "strengths": ["物語性のあるコンセプト", "感情価値の設計", "独自造形", "文化的リサーチ"], "risks": ["意図が伝わりにくい", "現実条件で迷いやすい", "評価を個人的に受け止める"], "roles": ["コンセプトデザイン", "体験設計", "クラフト領域", "ブランドストーリー"], "team": "製品へ感情的な意味を与え、他案にはない独自性を作る役割に向いています。"}, "ENFP": {"name": "体験の伝道師", "summary": "製品が生む楽しい体験を描き、周囲を巻き込みながら形にする共創型です。", "detail": "あなたは、モノそのものよりも、製品が使われる場面、人同士の関係、驚きや喜びに注目するタイプです。未来の使用シーンを生き生きと描き、企画、技術、マーケティングのメンバーを巻き込みながらコンセプトを広げられます。ワークショップや共創型プロジェクトでも力を発揮します。一方で、アイデアが増えるほど焦点が散り、完成条件が曖昧になることがあります。中心となる体験を一文で定義し、追加案を優先順位づけすると、熱量を完成度へつなげられます。", "strengths": ["体験コンセプト", "共創ワークショップ", "未来シナリオ", "チームの活性化"], "risks": ["アイデアが拡散する", "完成条件が曖昧になる", "細部確認を忘れやすい"], "roles": ["UXコンセプト", "サービス連携", "ワークショップ設計", "新規企画"], "team": "チームに利用者視点と前向きなエネルギーを持ち込み、共創を促す役割に向いています。"}, "ENFJ": {"name": "ビジョンの旗振り役", "summary": "ブランドの未来像を分かりやすく示し、チームの共感を成果へ変える牽引型です。", "detail": "あなたは、製品が目指す未来やブランドの価値を言葉とビジュアルで示し、関係者の意欲を一つの方向へまとめるタイプです。利用者の感情、社会的な意味、事業目標を統合し、プロジェクトに明確な物語を与えられます。プレゼンテーションや組織横断の活動でも強みがあります。一方で、周囲への配慮が強いほど、自分の負担や技術的な懸念を後回しにすることがあります。実現条件を担当者と早期に確認し、ビジョンと実務を並行して管理すると、持続的にリードできます。", "strengths": ["ビジョン提示", "ブランドストーリー", "チーム牽引", "社会価値の統合"], "risks": ["周囲を優先しすぎる", "技術課題を楽観視する", "期待を背負いすぎる"], "roles": ["デザインリード", "ブランド責任者", "ビジョン策定", "組織横断プロジェクト"], "team": "目的と価値を分かりやすく伝え、メンバーの力を一つにまとめる役割に向いています。"}};
+
+const productDesignProfiles = {
+  "INTJ":{"strengths":["戦略設計", "システム設計"],"domains":["デザイン戦略","プロダクト企画","デザインシステム"]},
+  "INTP":{"strengths":["技術探索", "構造分析", "インタラクション設計"],"domains":["インタラクションデザイン","先行開発","技術検証","UIデザイン"]},
+  "ENTJ":{"strengths":["プロジェクトリード", "意思決定"],"domains":["デザインマネジメント","プロダクトマネジメント","事業開発"]},
+  "ENTP":{"strengths":["コンセプト開発", "アイデア創出", "技術探索"],"domains":["新規事業","事業開発","先行開発","イノベーション推進"]},
+  "INFJ":{"strengths":["体験設計", "ユーザー理解"],"domains":["UXデザイン","UIデザイン","サービスデザイン","ユーザーリサーチ"]},
+  "INFP":{"strengths":["コンセプト創出", "世界観構築"],"domains":["コンセプトデザイン","ビジョンデザイン","ブランドデザイン"]},
+  "ENFJ":{"strengths":["ビジョン共有", "ファシリテーション"],"domains":["ビジョンデザイン","サービスデザイン","ブランドデザイン","デザインマネジメント"]},
+  "ENFP":{"strengths":["共創", "発想"],"domains":["UXデザイン","UIデザイン","サービスデザイン","ワークショップ設計"]},
+  "ISTJ":{"strengths":["品質設計", "標準化"],"domains":["設計品質","設計標準化","デザインシステム","品質管理"]},
+  "ISFJ":{"strengths":["ユーザー配慮", "アクセシビリティ"],"domains":["UXデザイン","UIデザイン","アクセシビリティ","ユーザーリサーチ"]},
+  "ESTJ":{"strengths":["開発推進", "プロジェクト管理"],"domains":["プロジェクトマネジメント","開発マネジメント","デザインマネジメント"]},
+  "ESFJ":{"strengths":["関係者調整", "合意形成"],"domains":["CXデザイン","サービスデザイン","デザイン推進","ワークショップ設計"]},
+  "ISTP":{"strengths":["試作開発", "機構設計", "技術検証"],"domains":["機構設計","設計開発","先行開発","技術検証"]},
+  "ISFP":{"strengths":["CMF", "スタイリング", "造形表現"],"domains":["マテリアルデザイン","クラフト","ビジュアルデザイン","ブランドデザイン"]},
+  "ESTP":{"strengths":["試作", "量産立ち上げ", "問題解決"],"domains":["設計開発","生産技術","開発推進","品質改善"]},
+  "ESFP":{"strengths":["スタイリング", "ビジュアル表現"],"domains":["ブランドデザイン","ビジュアルデザイン","トレンド分析","広告クリエイティブ"]}
+};
+
+const careerProfiles = {"INTJ":["デザインストラテジスト","UXアーキテクト","デザインシステムリード","プロダクトデザイン責任者"],"INTP":["UXアーキテクト","インタラクションデザイナー","プロトタイピングリード","先行開発デザイナー"],"ENTJ":["デザインディレクター","プロダクトマネージャー","デザインマネージャー","サービスデザインリード"],"ENTP":["新規事業デザイナー","UXコンセプトデザイナー","インタラクションデザイナー","イノベーションリード"],"INFJ":["UXデザイナー","サービスデザイナー","ブランドエクスペリエンスデザイナー","デザインリサーチャー"],"INFP":["UXライター","コンセプトデザイナー","ブランドデザイナー","エクスペリエンスデザイナー"],"ENFJ":["サービスデザインリード","UXリード","デザインファシリテーター","デザインマネージャー"],"ENFP":["UXコンセプトデザイナー","サービスデザイナー","ワークショップデザイナー","新規事業デザイナー"],"ISTJ":["UIデザイナー","デザインシステムデザイナー","ハードウェアデザイナー","デザイン品質担当"],"ISFJ":["UXデザイナー","アクセシビリティデザイナー","サービスデザイナー","ユーザーリサーチャー"],"ESTJ":["デザインプロジェクトマネージャー","デザインオペレーション","ハードウェア開発リード","プロダクトデザインマネージャー"],"ESFJ":["サービスデザイナー","CXデザイナー","UXデザイナー","デザインコーディネーター"],"ISTP":["プロトタイピングデザイナー","インタラクションプロトタイパー","ハードウェアデザイナー","デザインエンジニア"],"ISFP":["UIビジュアルデザイナー","インタラクションデザイナー","CMFデザイナー","クラフトデザイナー"],"ESTP":["プロトタイピングリード","デザインエンジニア","ハードウェア開発デザイナー","フィールドサービスデザイナー"],"ESFP":["UIビジュアルデザイナー","エクスペリエンスデザイナー","CMFデザイナー","ブランドエクスペリエンスデザイナー"]};
+const domainProfiles = {"INTJ":{"scores":{"GUI":88,"UX":86,"ハードウェア":76,"サービス":82},"careers":["デザインストラテジスト","UXアーキテクト","デザインシステムリード","プロダクトデザイン責任者"],"notes":["GUI：デザインシステムや複雑な情報設計","UX：体験全体の構造化と長期設計","ハードウェア：製品体系・プラットフォーム設計","サービス：複数接点を統合するサービス構想"]},"INTP":{"scores":{"GUI":80,"UX":84,"ハードウェア":82,"サービス":72},"careers":["UXアーキテクト","インタラクションデザイナー","プロトタイピングリード","先行開発デザイナー"],"notes":["GUI：複雑な操作原理や新しいインタラクション","UX：仮説検証と情報構造の設計","ハードウェア：新機構・技術検証","サービス：仕組みやルールの再設計"]},"ENTJ":{"scores":{"GUI":82,"UX":86,"ハードウェア":78,"サービス":90},"careers":["デザインディレクター","プロダクトマネージャー","デザインマネージャー","サービスデザインリード"],"notes":["GUI：事業目標と接続したUI方針","UX：体験戦略と優先順位決定","ハードウェア：大型開発の統括","サービス：事業・組織をまたぐ変革推進"]},"ENTP":{"scores":{"GUI":86,"UX":88,"ハードウェア":78,"サービス":88},"careers":["新規事業デザイナー","UXコンセプトデザイナー","インタラクションデザイナー","イノベーションリード"],"notes":["GUI：新しい操作や表現の探索","UX：未来体験の仮説づくり","ハードウェア：新技術を用いたコンセプト開発","サービス：新規サービスと事業機会の創出"]},"INFJ":{"scores":{"GUI":82,"UX":94,"ハードウェア":68,"サービス":92},"careers":["UXデザイナー","サービスデザイナー","ブランドエクスペリエンスデザイナー","デザインリサーチャー"],"notes":["GUI：ブランド思想を感じる一貫した体験","UX：深いユーザー理解と体験ビジョン","ハードウェア：意味や愛着を重視したコンセプト","サービス：社会的価値と利用体験の統合"]},"INFP":{"scores":{"GUI":84,"UX":92,"ハードウェア":72,"サービス":86},"careers":["UXライター","コンセプトデザイナー","ブランドデザイナー","エクスペリエンスデザイナー"],"notes":["GUI：感情に寄り添う表現と言葉","UX：ストーリー性のある体験設計","ハードウェア：愛着や文化性を持つ造形","サービス：利用者の価値観を中心にした設計"]},"ENFJ":{"scores":{"GUI":88,"UX":94,"ハードウェア":70,"サービス":96},"careers":["サービスデザインリード","UXリード","デザインファシリテーター","デザインマネージャー"],"notes":["GUI：チームをまとめる体験方針づくり","UX：共感を軸にした体験戦略","ハードウェア：ユーザー価値を部門横断で共有","サービス：共創・組織変革・顧客体験設計"]},"ENFP":{"scores":{"GUI":90,"UX":92,"ハードウェア":70,"サービス":94},"careers":["UXコンセプトデザイナー","サービスデザイナー","ワークショップデザイナー","新規事業デザイナー"],"notes":["GUI：楽しく直感的なインタラクション","UX：未来シナリオと体験コンセプト","ハードウェア：新しい使用体験の提案","サービス：共創型の新サービス企画"]},"ISTJ":{"scores":{"GUI":82,"UX":72,"ハードウェア":94,"サービス":70},"careers":["UIデザイナー","デザインシステムデザイナー","ハードウェアデザイナー","デザイン品質担当"],"notes":["GUI：一貫性・アクセシビリティ・仕様管理","UX：既存フローの着実な改善","ハードウェア：量産品質・詳細設計","サービス：運用ルールと品質基準の整備"]},"ISFJ":{"scores":{"GUI":84,"UX":90,"ハードウェア":82,"サービス":90},"careers":["UXデザイナー","アクセシビリティデザイナー","サービスデザイナー","ユーザーリサーチャー"],"notes":["GUI：分かりやすさとアクセシビリティ","UX：不安や負担を減らす体験設計","ハードウェア：医療・福祉・生活用品","サービス：丁寧な顧客体験と運用改善"]},"ESTJ":{"scores":{"GUI":82,"UX":78,"ハードウェア":92,"サービス":84},"careers":["デザインプロジェクトマネージャー","デザインオペレーション","ハードウェア開発リード","プロダクトデザインマネージャー"],"notes":["GUI：大規模UIの標準化と運用","UX：改善施策の実行管理","ハードウェア：量産・品質・納期の統括","サービス：複数部門の運用設計"]},"ESFJ":{"scores":{"GUI":86,"UX":90,"ハードウェア":76,"サービス":94},"careers":["サービスデザイナー","CXデザイナー","UXデザイナー","デザインコーディネーター"],"notes":["GUI：親しみやすく安心できるUI","UX：幅広い利用者に受け入れられる体験","ハードウェア：生活用品・公共機器","サービス：顧客接点と関係者の調整"]},"ISTP":{"scores":{"GUI":78,"UX":76,"ハードウェア":98,"サービス":68},"careers":["プロトタイピングデザイナー","インタラクションプロトタイパー","ハードウェアデザイナー","デザインエンジニア"],"notes":["GUI：動くプロトタイプによる検証","UX：操作課題の実践的な改善","ハードウェア：機構・試作・現場調整","サービス：現場オペレーションの改善"]},"ISFP":{"scores":{"GUI":92,"UX":86,"ハードウェア":94,"サービス":74},"careers":["UIビジュアルデザイナー","インタラクションデザイナー","CMFデザイナー","クラフトデザイナー"],"notes":["GUI：細部の視覚品質とマイクロインタラクション","UX：触感的で心地よい体験","ハードウェア：CMF・造形・質感設計","サービス：空間や接客を含む感覚的体験"]},"ESTP":{"scores":{"GUI":84,"UX":80,"ハードウェア":96,"サービス":82},"careers":["プロトタイピングリード","デザインエンジニア","ハードウェア開発デザイナー","フィールドサービスデザイナー"],"notes":["GUI：素早い試作とユーザーテスト","UX：現場での問題発見と改善","ハードウェア：量産立ち上げ・現場対応","サービス：現場運用と顧客接点の改善"]},"ESFP":{"scores":{"GUI":94,"UX":88,"ハードウェア":84,"サービス":90},"careers":["UIビジュアルデザイナー","エクスペリエンスデザイナー","CMFデザイナー","ブランドエクスペリエンスデザイナー"],"notes":["GUI：魅力的なビジュアルと反応性","UX：楽しさや感情を動かす体験","ハードウェア：スタイリング・CMF・市場表現","サービス：イベント・店舗・接客体験"]}};
+const questionsData = [{"valA":"P","valB":"J","q":"タスク管理では、どちらを好みますか？","a":"全体の流れを見ながら必要なことに対応する","b":"チェックリストやスケジュールで管理する","axis":4},{"valA":"S","valB":"N","q":"デザインを組み立てるとき、どちらに近いですか？","a":"具体的な要素から全体を整える","b":"全体のコンセプトから細部へ進む","axis":2},{"valA":"E","valB":"I","q":"考えがまだまとまっていないとき、どちらが自然ですか？","a":"誰かと話しながら考えを形にする","b":"一人で考えを整理してから共有する","axis":1},{"valA":"J","valB":"P","q":"開発プロセスでは、どちらが自然ですか？","a":"一定の手順と基準を保ちながら進める","b":"状況に応じて手順や方法を変える","axis":4},{"valA":"T","valB":"F","q":"判断に迷ったとき、どちらの問いを使いますか？","a":"原則として最も筋が通るのは何か","b":"この判断で誰がどう感じるか","axis":3},{"valA":"E","valB":"I","q":"考えを共有する頻度は、どちらに近いですか？","a":"途中段階からこまめに共有する","b":"ある程度まとまった段階で共有する","axis":1},{"valA":"I","valB":"E","q":"他職種との連携では、どちらを好みますか？","a":"論点を整理してから集中的に相談する","b":"短い会話を頻繁に重ねる","axis":1},{"valA":"J","valB":"P","q":"予定外の変更が起きたとき、どちらが自然ですか？","a":"計画と影響範囲を整理し直す","b":"新しい条件で試しながら対応する","axis":4},{"valA":"P","valB":"J","q":"提出前の判断では、どちらに近いですか？","a":"改善余地がある限り手を加え続ける","b":"必要条件を満たした時点で完成とする","axis":4},{"valA":"F","valB":"T","q":"意見が分かれたとき、どちらから整理しますか？","a":"各人が重視している価値","b":"論点と因果関係","axis":3},{"valA":"P","valB":"J","q":"一度決めた方針は、どちらの扱いが自然ですか？","a":"より良い案があれば途中でも変更する","b":"大きな理由がなければ維持する","axis":4},{"valA":"P","valB":"J","q":"完成形について、どちらに近いですか？","a":"試行錯誤を通じて完成形を見つける","b":"目標状態を定めてから作る","axis":4},{"valA":"J","valB":"P","q":"意思決定のタイミングは、どちらを好みますか？","a":"必要情報がそろったら早めに決める","b":"新しい情報が入る余地を長く残す","axis":4},{"valA":"I","valB":"E","q":"知識を広げるとき、どちらを好みますか？","a":"資料や事例を自分のペースで読み込む","b":"人との会話や議論から理解を広げる","axis":1},{"valA":"N","valB":"S","q":"企画の価値を説明するとき、どちらを中心にしますか？","a":"将来どのような変化につながるか","b":"現在どの問題を具体的に改善するか","axis":2},{"valA":"I","valB":"E","q":"会議が続いた日の終わりは、どちらに近いですか？","a":"一人で静かに過ごすことで回復する","b":"さらに人と話すことで気分を切り替える","axis":1},{"valA":"F","valB":"T","q":"レビューコメントを書くとき、どちらに近いですか？","a":"意図を尊重しながら提案として伝える","b":"判断根拠と修正条件を明確にする","axis":3},{"valA":"N","valB":"S","q":"アイデアを広げるとき、どちらが自然ですか？","a":"既存の前提を外して可能性を考える","b":"実例や制約を手がかりに具体化する","axis":2},{"valA":"S","valB":"N","q":"市場を見るとき、どちらに注意が向きますか？","a":"現在繰り返し起きている行動","b":"これから起こりそうな変化","axis":2},{"valA":"S","valB":"N","q":"説明を理解するとき、どちらが入りやすいですか？","a":"具体例や手順から内容をつかむ","b":"概念やモデルから全体像をつかむ","axis":2},{"valA":"I","valB":"E","q":"大きな判断をした後は、どちらをしたくなりますか？","a":"一人で振り返って考えを確かめる","b":"誰かに話して考えを確かめる","axis":1},{"valA":"S","valB":"N","q":"価値を高めるなら、どちらに魅力を感じますか？","a":"観察できる価値を精度高く磨き込む","b":"まだ明確でない潜在的な価値を形にする","axis":2},{"valA":"J","valB":"P","q":"プロトタイプを作るとき、どちらの進め方が自然ですか？","a":"要件や確認項目を整理してから作る","b":"まず作り、触りながら方向を探る","axis":4},{"valA":"T","valB":"F","q":"チーム内の対立に対応するとき、どちらから始めますか？","a":"争点を分けて比較可能にする","b":"互いの意図や懸念を言語化する","axis":3},{"valA":"F","valB":"T","q":"プロダクトポリシーを決めるとき、どちらを重視しますか？","a":"利用者ごとの事情を包摂できる柔軟さ","b":"どの場面にも適用できる明確さ","axis":3},{"valA":"N","valB":"S","q":"プロトタイプで確かめたいのは、どちらですか？","a":"新しい体験の方向性が成立するか","b":"形状や操作が実際に機能するか","axis":2},{"valA":"T","valB":"F","q":"複数案から選ぶとき、最終判断でどちらを重視しますか？","a":"一貫した評価基準に照らした妥当性","b":"関係者が受け入れやすい納得感","axis":3},{"valA":"J","valB":"P","q":"選択肢を比較するとき、どちらが自然ですか？","a":"基準を決めて候補を絞る","b":"複数案を並行して残す","axis":4},{"valA":"I","valB":"E","q":"集中しやすい環境は、どちらに近いですか？","a":"中断が少なく静かな環境","b":"適度に人の気配や会話がある環境","axis":1},{"valA":"E","valB":"I","q":"選択肢が多く迷うとき、どちらが自然ですか？","a":"相談しながら判断基準を見つける","b":"自分で比較しながら判断基準を作る","axis":1},{"valA":"F","valB":"T","q":"説明の説得力を高めるなら、どちらを中心にしますか？","a":"具体的な利用者の体験や物語","b":"構造化した根拠や比較","axis":3},{"valA":"P","valB":"J","q":"作業を始めるとき、どちらが自然ですか？","a":"状況を見ながら進め方を組み替える","b":"計画や手順を決めてから進める","axis":4},{"valA":"E","valB":"I","q":"仕事の切り替えには、どちらが役立ちますか？","a":"短い会話や外出で刺激を変える","b":"静かな時間を取り、頭の中を整理する","axis":1},{"valA":"E","valB":"I","q":"新しい環境に入ったとき、どちらが自然ですか？","a":"まず人と関わりながら状況をつかむ","b":"まず観察しながら状況をつかむ","axis":1},{"valA":"N","valB":"S","q":"表現を検討するとき、どちらを好みますか？","a":"新しい見方を生む表現","b":"情報を正確に伝える表現","axis":2},{"valA":"S","valB":"N","q":"情報が不足しているとき、どちらを選びやすいですか？","a":"追加の事実や事例を集める","b":"仮説を置いて可能性を探る","axis":2},{"valA":"N","valB":"S","q":"新しいプロダクトを考えるとき、どちらから始めたいですか？","a":"将来実現したい体験や方向性","b":"現在観察できる課題や利用状況","axis":2},{"valA":"F","valB":"T","q":"改善案を伝えるとき、どちらを先に考えますか？","a":"相手が受け取りやすい伝え方を整える","b":"何をどう直すべきかを明確にする","axis":3},{"valA":"E","valB":"I","q":"レビューで意見を受けた直後は、どちらが自然ですか？","a":"その場で質問し、対話しながら理解を深める","b":"いったん持ち帰り、整理してから対応する","axis":1},{"valA":"S","valB":"N","q":"曖昧なテーマを扱うとき、どちらが自然ですか？","a":"具体例に置き換えて状況を確かめる","b":"抽象化して意味や関係を見つける","axis":2},{"valA":"N","valB":"S","q":"最初の着想では、どちらを使うことが多いですか？","a":"連想やひらめきから仮説を作る","b":"経験や確認できる情報から案を作る","axis":2},{"valA":"T","valB":"F","q":"ルールを適用するとき、どちらに近いですか？","a":"同じ条件には同じ基準を適用する","b":"個別の事情に応じて扱いを調整する","axis":3},{"valA":"P","valB":"J","q":"締切がある仕事では、どちらに近いですか？","a":"期限近くまで選択肢を残し、改善を続ける","b":"早めに完成状態を作り、確認時間を取る","axis":4},{"valA":"J","valB":"P","q":"安心して進めやすい環境は、どちらですか？","a":"役割や期限が明確な環境","b":"裁量が大きく変更しやすい環境","axis":4},{"valA":"N","valB":"S","q":"新しい技術を知ったとき、最初に考えるのはどちらですか？","a":"別の用途や将来の応用可能性","b":"有効な条件や実際の導入方法","axis":2},{"valA":"J","valB":"P","q":"重要な発表の前は、どちらに近いですか？","a":"早めに準備を固め、想定事項を確認する","b":"要点を押さえ、当日の流れに合わせる","axis":4},{"valA":"J","valB":"P","q":"作業時間の使い方は、どちらを好みますか？","a":"区切りを作り、一定のペースで進める","b":"集中できるときに一気に進める","axis":4},{"valA":"I","valB":"E","q":"アイデアが行き詰まったとき、どちらを選びやすいですか？","a":"一人で調査やスケッチを続けて突破口を探す","b":"人に話して反応を得ながら突破口を探す","axis":1},{"valA":"F","valB":"T","q":"議論をまとめるとき、どちらを目指しますか？","a":"関係者が前向きに進める結論","b":"論理的に矛盾のない結論","axis":3},{"valA":"F","valB":"T","q":"調査結果が食い違ったとき、どちらから検討しますか？","a":"参加者ごとの背景や文脈","b":"データの再現性や因果の整合性","axis":3},{"valA":"N","valB":"S","q":"計画を立てるとき、どちらが自然ですか？","a":"理想状態を置き、そこから逆算する","b":"現状の条件から実行可能な段階を組む","axis":2},{"valA":"T","valB":"F","q":"仕様の例外を認めるか判断するとき、どちらを重視しますか？","a":"システム全体の一貫性","b":"その利用状況での受容性","axis":3},{"valA":"P","valB":"J","q":"複数タスクがあるとき、どちらに近いですか？","a":"状況や集中状態に応じて着手を変える","b":"優先順位と順番を先に決める","axis":4},{"valA":"E","valB":"I","q":"新しいプロジェクトの初期段階では、どちらが自然ですか？","a":"早い段階から関係者と会話を重ねる","b":"まず情報を読み込み、自分なりの仮説を作る","axis":1},{"valA":"E","valB":"I","q":"ワークショップの後は、どちらが自然ですか？","a":"参加者との会話を続けながら考えを広げる","b":"一人で振り返る時間を取って考えを深める","axis":1},{"valA":"T","valB":"F","q":"厳しい制約下で優先順位を決めるとき、どちらが自然ですか？","a":"目的への寄与を比較して決める","b":"影響を受ける人の負担を比較して決める","axis":3},{"valA":"S","valB":"N","q":"複雑な問題を理解するとき、どちらを先に捉えますか？","a":"具体的な事実や個別の現象","b":"背景にあるパターンや共通構造","axis":2},{"valA":"I","valB":"E","q":"発表前の準備では、どちらに近いですか？","a":"一人で言葉や構成を練って整理する","b":"人に説明して反応を見ながら整理する","axis":1},{"valA":"T","valB":"F","q":"成果を振り返るとき、どちらを先に確認しますか？","a":"設定した目的や指標を達成したか","b":"関係者の体験や関係性がどう変化したか","axis":3},{"valA":"T","valB":"F","q":"最終案を選ぶとき、どちらを決め手にしやすいですか？","a":"根拠が明確で説明可能であること","b":"関係者の価値観に沿い支持を得られること","axis":3}];
+
+const quizSection=document.getElementById("quiz-section");
+const resultSection=document.getElementById("result-section");
+const typesSection=document.getElementById("types-section");
+const quizForm=document.getElementById("quiz-form");
+const questionsContainer=document.getElementById("questions-container");
+const progressBar=document.getElementById("progress-bar");
+const progressFill=document.getElementById("progress-fill");
+const progressText=document.getElementById("progress-text");
+
+const typeGroupsData=[
+  {
+    name:"探究派", code:"NT", theme:"nt",
+    description:"複雑な課題を構造化し、新しい仕組みや未来の方向性を描くグループです。",
+    types:["INTJ","INTP","ENTJ","ENTP"]
+  },
+  {
+    name:"共感派", code:"NF", theme:"nf",
+    description:"人の感情や価値観を深く捉え、意味のある体験やビジョンへ変えるグループです。",
+    types:["INFJ","INFP","ENFJ","ENFP"]
+  },
+  {
+    name:"堅実派", code:"SJ", theme:"sj",
+    description:"品質、運用、信頼性を大切にし、計画を着実な成果へ結びつけるグループです。",
+    types:["ISTJ","ISFJ","ESTJ","ESFJ"]
+  },
+  {
+    name:"行動派", code:"SP", theme:"sp",
+    description:"実物や感覚から素早く学び、機能する試作や魅力的な表現へ仕上げるグループです。",
+    types:["ISTP","ISFP","ESTP","ESFP"]
+  }
+];
+
+let typesReturnView="quiz";
+
+function renderTypeDirectory(){
+  const container=document.getElementById("type-groups");
+  container.innerHTML="";
+  typeGroupsData.forEach(group=>{
+    const section=document.createElement("section");
+    section.className="type-group";
+    section.dataset.theme=group.theme;
+    const cards=group.types.map(code=>{
+      const type=typesData[code];
+      const profile=productDesignProfiles[code];
+      const domains=profile.domains.map(domain=>`<li>${domain}</li>`).join("");
+      return `<article class="type-directory-card">
+        <div class="type-directory-code">${code}</div>
+        <div class="type-directory-name">${type.name}</div>
+        <p class="type-directory-summary">${type.summary}</p>
+        <div class="type-profile-section type-profile-strength">
+          <div class="type-profile-label">プロダクトデザインで発揮する強み</div>
+          <div class="type-profile-value">${profile.strengths.join("・")}</div>
+        </div>
+        <div class="type-profile-section">
+          <div class="type-profile-label">活躍しやすい領域</div>
+          <ul class="type-profile-domains">${domains}</ul>
+        </div>
+      </article>`;
+    }).join("");
+    section.innerHTML=`<div class="type-group-header">
+      <div><h2 class="type-group-title">${group.name}</h2><p class="type-group-description">${group.description}</p></div>
+      <span class="type-group-code">${group.code}グループ</span>
+    </div><div class="type-card-grid">${cards}</div>`;
+    container.appendChild(section);
+  });
+}
+
+function openTypesDirectory(from){
+  typesReturnView=from;
+  quizSection.style.display="none";
+  resultSection.style.display="none";
+  typesSection.style.display="block";
+  quizSection.setAttribute("aria-hidden","true");
+  resultSection.setAttribute("aria-hidden","true");
+  typesSection.setAttribute("aria-hidden","false");
+  window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>document.getElementById("types-title").focus?.({preventScroll:true}),200);
+}
+
+function closeTypesDirectory(){
+  typesSection.style.display="none";
+  typesSection.setAttribute("aria-hidden","true");
+  if(typesReturnView==="result"){
+    resultSection.style.display="block";
+    resultSection.setAttribute("aria-hidden","false");
+  }else{
+    quizSection.style.display="block";
+    quizSection.setAttribute("aria-hidden","false");
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderQuestions(){
+  const fragment=document.createDocumentFragment();
+  questionsData.forEach((q,index)=>{
+    const fieldset=document.createElement("section");
+    fieldset.className="question-card";
+    fieldset.dataset.questionIndex=index;
+    const legend=document.createElement("h2");
+    legend.className="question-title";
+    legend.id=`question-title-${index}`;
+    legend.textContent=`Q${index+1}. ${q.q}`;
+    fieldset.setAttribute("aria-labelledby",legend.id);
+    fieldset.appendChild(legend);
+    const options=document.createElement("div");
+    options.className="options";
+    [["A",q.valA,q.a],["B",q.valB,q.b]].forEach(([letter,value,text])=>{
+      const label=document.createElement("label");
+      label.className="option";
+      const input=document.createElement("input");
+      input.type="radio"; input.name=`q${index}`; input.value=value;
+      const letterSpan=document.createElement("span");
+      letterSpan.className="option-letter"; letterSpan.textContent=`${letter}.`;
+      const textSpan=document.createElement("span");
+      textSpan.textContent=text;
+      label.append(input,letterSpan,textSpan);
+      options.appendChild(label);
+    });
+    fieldset.appendChild(options);
+    fragment.appendChild(fieldset);
+  });
+  questionsContainer.appendChild(fragment);
+  progressBar.setAttribute("aria-valuemax",questionsData.length);
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered=quizForm.querySelectorAll('input[type="radio"]:checked').length;
+  const percent=answered/questionsData.length*100;
+  progressFill.style.width=`${percent}%`;
+  progressText.textContent=`${answered} / ${questionsData.length}`;
+  progressBar.setAttribute("aria-valuenow",answered);
+  progressBar.setAttribute("aria-valuetext",`${questionsData.length}問中${answered}問回答済み`);
+}
+
+questionsContainer.addEventListener("change",e=>{
+  if(!(e.target instanceof HTMLInputElement)||e.target.type!=="radio")return;
+  const options=e.target.closest(".options");
+  options.querySelectorAll(".option").forEach(label=>{
+    label.classList.toggle("is-selected",label.querySelector("input").checked);
+  });
+  e.target.closest(".question-card").classList.remove("is-unanswered");
+  updateProgress();
+});
+
+function getUnanswered(){
+  return questionsData.map((_,i)=>quizForm.querySelector(`input[name="q${i}"]:checked`)?null:quizForm.querySelector(`[data-question-index="${i}"]`)).filter(Boolean);
+}
+
+function calculateScores(){
+  const scores={E:0,I:0,N:0,S:0,T:0,F:0,J:0,P:0};
+  new FormData(quizForm).forEach(v=>{if(v in scores)scores[v]++});
+  return scores;
+}
+
+function determineType(scores){
+  const axes=[
+    {left:"E",right:"I",label:"外向 / 内向"},
+    {left:"N",right:"S",label:"未来構想 / 現実具体"},
+    {left:"T",right:"F",label:"原則論理 / 価値配慮"},
+    {left:"J",right:"P",label:"計画確定 / 試行探索"}
+  ];
+  let main="";
+  const close=[];
+  axes.forEach((axis,position)=>{
+    const l=scores[axis.left],r=scores[axis.right];
+    const winner=l>=r?axis.left:axis.right;
+    const loser=l>=r?axis.right:axis.left;
+    const difference=Math.abs(l-r);
+    main+=winner;
+    if(difference<=3)close.push({...axis,position,winner,loser,difference,leftScore:l,rightScore:r});
+  });
+  return {main,close,axes};
+}
+
+function fillList(id,items){
+  const el=document.getElementById(id); el.innerHTML="";
+  items.forEach(item=>{const li=document.createElement("li");li.textContent=item;el.appendChild(li)});
+}
+
+function renderAxisChart(scores){
+  const axes=[
+    ["E","I","外向","内向",
+      "人との対話や外部からの刺激を通じて、考えを整理しながら進めます。",
+      "一人で考える時間を取り、内側で整理してから共有します。"],
+    ["N","S","未来構想","現実具体",
+      "将来の可能性、パターン、全体のコンセプトから考えを広げます。",
+      "観察できる事実、具体例、実際の条件から確実に形へ落とし込みます。"],
+    ["T","F","原則論理","価値配慮",
+      "一貫した基準、因果関係、説明可能性を重視して判断します。",
+      "個別事情、価値観、受容性、納得感を重視して判断します。"],
+    ["J","P","計画確定","試行探索",
+      "条件や手順を整理し、段階的に確定しながら進めます。",
+      "試作と修正を重ね、可能性を残しながら形を探ります。"]
+  ];
+
+  const container=document.getElementById("axis-chart");
+  container.innerHTML="";
+
+  axes.forEach(([left,right,leftLabel,rightLabel,leftDesc,rightDesc])=>{
+    const total=scores[left]+scores[right];
+    const leftPercent=total ? scores[left]/total*100 : 50;
+    const winner=scores[left]>=scores[right] ? left : right;
+    const winnerLabel=winner===left ? leftLabel : rightLabel;
+    const description=winner===left ? leftDesc : rightDesc;
+    const difference=Math.abs(scores[left]-scores[right]);
+
+    let strengthLabel="ほぼ中間";
+    if(difference>=9){strengthLabel="非常に明確な傾向"}
+    else if(difference>=7){strengthLabel="かなり明確な傾向"}
+    else if(difference>=5){strengthLabel="やや明確な傾向"}
+
+    const position=Math.max(4,Math.min(96,100-leftPercent));
+    const item=document.createElement("section");
+    item.className="axis-item";
+    item.innerHTML=`
+      <div class="axis-title">
+        <strong>${leftLabel} / ${rightLabel}</strong>
+        <span class="axis-result">${winnerLabel}寄り</span>
+      </div>
+      <div class="axis-scale" aria-label="${leftLabel}${scores[left]}、${rightLabel}${scores[right]}">
+        <div class="axis-letter ${winner===left?"is-winner":""}">${left}</div>
+        <div class="axis-line">
+          <span class="axis-marker" style="left:${position}%"></span>
+        </div>
+        <div class="axis-letter ${winner===right?"is-winner":""}">${right}</div>
+      </div>
+      <div class="axis-labels">
+        <span>${leftLabel} ${scores[left]}</span>
+        <span>${rightLabel} ${scores[right]}</span>
+      </div>
+      <div class="axis-strength">
+        <span class="axis-strength-text">${strengthLabel}</span>
+      </div>
+      <p class="axis-description">${description}</p>`;
+    container.appendChild(item);
+  });
+}
+
+
+
+function getTopDomainCareers(typeCode){
+  const profile=domainProfiles[typeCode];
+  if(!profile||!profile.scores) return [];
+  const ranked=Object.entries(profile.scores).sort((a,b)=>b[1]-a[1]);
+  const maxScore=ranked[0][1];
+  const selected=ranked.filter(([,score])=>maxScore-score<=2).slice(0,2);
+  const hardwareTitleByType={ISFP:"インダストリアルデザイナー",ESFP:"インダストリアルデザイナー",INFJ:"インダストリアルデザイナー",INFP:"インダストリアルデザイナー"};
+  const labels={
+    GUI:"GUIデザイナー",
+    UX:"UXデザイナー",
+    サービス:"サービスデザイナー",
+    ハードウェア:hardwareTitleByType[typeCode]||"ハードウェアデザイナー"
+  };
+  return selected.map(([domain])=>labels[domain]).filter(Boolean);
+}
+
+function getTypeTheme(typeCode){
+  const temperament=typeCode.slice(1,3);
+  if(temperament==="NT") return "nt";
+  if(temperament==="NF") return "nf";
+  if(typeCode[1]==="S" && typeCode[3]==="J") return "sj";
+  return "sp";
+}
+
+function showResult(scores,result){
+  const info=typesData[result.main];
+  resultSection.classList.remove("theme-nt","theme-nf","theme-sj","theme-sp");
+  resultSection.classList.add(`theme-${getTypeTheme(result.main)}`);
+  document.getElementById("main-type-code").textContent=result.main;
+  document.getElementById("main-type-name").textContent=info.name;
+  document.getElementById("main-type-summary").textContent=info.summary;
+  document.getElementById("main-type-detail").textContent=info.detail;
+  const productProfile=productDesignProfiles[result.main];
+  document.getElementById("product-strength").textContent=productProfile.strengths.join("・");
+  fillList("risk-list",info.risks);
+  fillList("domain-list",productProfile.domains);
+  renderAxisChart(scores);
+
+  const badge=document.getElementById("result-badge");
+  const subContainer=document.getElementById("sub-type-container");
+  if(result.close.length===0){
+    badge.textContent="傾向が明確なスペシャリスト型";
+    subContainer.classList.remove("is-multiple-subtype");
+    subContainer.style.display="none";
+  }else{
+    const sorted=[...result.close].sort((a,b)=>a.position-b.position);
+    badge.textContent=sorted.length===1
+      ?"一つの軸に柔軟性があるハイブリッド型"
+      :"複数の軸を行き来するマルチタイプ";
+
+    const alternatives=sorted.map(axis=>{
+      const chars=result.main.split("");
+      chars[axis.position]=axis.loser;
+      return chars.join("");
+    });
+    const axisLabels=sorted.map(axis=>`${axis.left}/${axis.right}（${axis.leftScore}対${axis.rightScore}）`);
+
+    const subCodeEl=document.getElementById("sub-type-code");
+    const subNameEl=document.getElementById("sub-type-name");
+    const subDescEl=document.getElementById("sub-type-desc");
+
+    if(alternatives.length===1){
+      subContainer.classList.remove("is-multiple-subtype");
+      const alt=alternatives[0];
+      subCodeEl.textContent=alt;
+      subNameEl.textContent=typesData[alt].name;
+      subDescEl.innerHTML=
+        `<p class="single-subtype__summary">基本は${result.main}として判断しますが、状況によっては${alt}の「${typesData[alt].summary}」という特徴も表れます。特に、${sorted[0].label}に関わる判断では、相手や目的に応じて反対側の進め方を選べる柔軟性があります。</p>
+         <p class="subtype-card__axis">境界軸：${sorted[0].left}/${sorted[0].right}（${sorted[0].leftScore}対${sorted[0].rightScore}）</p>`;
+    }else{
+      subContainer.classList.add("is-multiple-subtype");
+      subCodeEl.textContent="";
+      subNameEl.textContent="境界軸から生じる隣接タイプ";
+      subDescEl.innerHTML=alternatives.map((alt,index)=>{
+        const axis=sorted[index];
+        return `
+          <article class="subtype-card">
+            <div class="subtype-card__code">${alt}</div>
+            <div class="subtype-card__body">
+              <h4 class="subtype-card__name">${typesData[alt].name}</h4>
+              <p class="subtype-card__summary">
+                基本は${result.main}として判断しますが、状況によっては${alt}の「${typesData[alt].summary}」という特徴も表れます。
+                特に、${axis.label}に関わる判断では、相手や目的に応じて反対側の進め方を選べる柔軟性があります。
+              </p>
+              <p class="subtype-card__axis">境界軸：${axis.left}/${axis.right}（${axis.leftScore}対${axis.rightScore}）</p>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    document.getElementById("sub-axis-reason").textContent=
+      "差3以下の軸を境界軸として表示しています。";
+    subContainer.style.display="block";
+  }
+
+  quizSection.style.display="none";
+  resultSection.style.display="block";
+  quizSection.setAttribute("aria-hidden","true");
+  resultSection.setAttribute("aria-hidden","false");
+  window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>document.getElementById("main-type-code").focus({preventScroll:true}),250);
+}
+
+quizForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  const unanswered=getUnanswered();
+  quizForm.querySelectorAll(".question-card").forEach(card=>card.classList.remove("is-unanswered"));
+  if(unanswered.length){
+    unanswered.forEach(card=>card.classList.add("is-unanswered"));
+    alert(`未回答の質問が${unanswered.length}問あります。`);
+    unanswered[0].scrollIntoView({behavior:"smooth",block:"center"});
+    setTimeout(()=>unanswered[0].querySelector("input").focus({preventScroll:true}),250);
+    return;
+  }
+  const scores=calculateScores();
+  const result=determineType(scores);
+  showResult(scores,result);
+});
+
+document.getElementById("restart-button").addEventListener("click",()=>{
+  quizForm.reset();
+  document.querySelectorAll(".option").forEach(el=>el.classList.remove("is-selected"));
+  resultSection.style.display="none";
+  quizSection.style.display="block";
+  resultSection.setAttribute("aria-hidden","true");
+  quizSection.setAttribute("aria-hidden","false");
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+document.getElementById("open-types-from-quiz").addEventListener("click",()=>openTypesDirectory("quiz"));
+document.getElementById("open-types-from-result").addEventListener("click",()=>openTypesDirectory("result"));
+document.getElementById("close-types").addEventListener("click",closeTypesDirectory);
+renderTypeDirectory();
+renderQuestions();
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const quizSection = document.getElementById("quiz-section");
+  const progressWrap = quizSection && quizSection.querySelector(".progress-wrap");
+  const sentinel = document.getElementById("progress-sticky-sentinel");
+  const placeholder = document.getElementById("progress-fixed-placeholder");
+
+  if (!quizSection || !progressWrap || !sentinel || !placeholder) return;
+
+  let originalRect = null;
+
+  function quizIsVisible() {
+    return window.getComputedStyle(quizSection).display !== "none" &&
+      quizSection.getAttribute("aria-hidden") !== "true";
+  }
+
+  function measureOriginalGeometry() {
+    const wasFixed = progressWrap.classList.contains("is-viewport-fixed");
+
+    if (wasFixed) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      progressWrap.style.left = "";
+      progressWrap.style.width = "";
+    }
+
+    originalRect = progressWrap.getBoundingClientRect();
+
+    if (wasFixed) {
+      progressWrap.style.left = originalRect.left + "px";
+      progressWrap.style.width = originalRect.width + "px";
+      progressWrap.classList.add("is-viewport-fixed");
+    }
+  }
+
+  function setFixedGeometry() {
+    if (!originalRect) measureOriginalGeometry();
+    progressWrap.style.left = originalRect.left + "px";
+    progressWrap.style.width = originalRect.width + "px";
+  }
+
+  function clearFixedGeometry() {
+    progressWrap.style.left = "";
+    progressWrap.style.width = "";
+  }
+
+  function updateProgressPosition() {
+    if (!quizIsVisible()) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+      originalRect = null;
+      return;
+    }
+
+    const shouldFix = sentinel.getBoundingClientRect().top <= 0;
+
+    if (shouldFix) {
+      if (!progressWrap.classList.contains("is-viewport-fixed")) {
+        originalRect = progressWrap.getBoundingClientRect();
+        placeholder.style.height = originalRect.height + "px";
+        placeholder.classList.add("is-active");
+        setFixedGeometry();
+        progressWrap.classList.add("is-viewport-fixed");
+      }
+    } else {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+      originalRect = null;
+    }
+  }
+
+  window.addEventListener("scroll", updateProgressPosition, { passive: true });
+  window.addEventListener("resize", function () {
+    const wasFixed = progressWrap.classList.contains("is-viewport-fixed");
+
+    if (wasFixed) {
+      progressWrap.classList.remove("is-viewport-fixed");
+      clearFixedGeometry();
+      placeholder.classList.remove("is-active");
+      placeholder.style.height = "0px";
+    }
+
+    originalRect = progressWrap.getBoundingClientRect();
+    updateProgressPosition();
+  });
+
+  document.addEventListener("click", function () {
+    requestAnimationFrame(updateProgressPosition);
+  });
+
+  updateProgressPosition();
+});
+</script>
+
+
+
+<script>
+document.addEventListener("keydown", function (event) {
+  if (event.key !== "0") return;
+
+  const active = document.activeElement;
+  if (
+    active &&
+    (active.tagName === "INPUT" ||
+     active.tagName === "TEXTAREA" ||
+     active.tagName === "SELECT" ||
+     active.isContentEditable)
+  ) return;
+
+  const quizSection = document.getElementById("quiz-section");
+  if (!quizSection || quizSection.getAttribute("aria-hidden") === "true") return;
+
+  event.preventDefault();
+
+  document.querySelectorAll('#quiz-form .question-card').forEach(function (card) {
+    const firstOption = card.querySelector('input[type="radio"]');
+    if (!firstOption) return;
+
+    firstOption.checked = true;
+    card.querySelectorAll(".option").forEach(function (label) {
+      const input = label.querySelector('input[type="radio"]');
+      label.classList.toggle("is-selected", Boolean(input && input.checked));
+    });
+    card.classList.remove("is-unanswered");
+  });
+
+  if (typeof updateProgress === "function") updateProgress();
+});
+</script>
+
+
+<script>
+document.addEventListener("keydown", function (event) {
+  if (!(event.key === "9" || event.code === "Digit9" || event.code === "Numpad9")) return;
+
+  const active = document.activeElement;
+  if (
+    active &&
+    (active.tagName === "INPUT" ||
+     active.tagName === "TEXTAREA" ||
+     active.tagName === "SELECT" ||
+     active.isContentEditable)
+  ) return;
+
+  const quizSection = document.getElementById("quiz-section");
+  if (!quizSection || quizSection.getAttribute("aria-hidden") === "true") return;
+
+  event.preventDefault();
+
+  document.querySelectorAll('#quiz-form .question-card').forEach(function (card) {
+    const options = card.querySelectorAll('input[type="radio"]');
+    const secondOption = options[1];
+    if (!secondOption) return;
+
+    secondOption.checked = true;
+    card.querySelectorAll(".option").forEach(function (label) {
+      const input = label.querySelector('input[type="radio"]');
+      label.classList.toggle("is-selected", Boolean(input && input.checked));
+    });
+    card.classList.remove("is-unanswered");
+  });
+
+  if (typeof updateProgress === "function") updateProgress();
+});
+</script>
 
 </body>
 </html>
