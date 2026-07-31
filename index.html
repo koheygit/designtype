@@ -826,7 +826,7 @@ html,body{overflow-x:hidden}
   padding-bottom:32px;
 }
 .product-strength-value{
-  font-size:clamp(20px,4vw,26px);
+  font-size:clamp(20px,3vw,26px);
   line-height:1.5;
 }
 .product-strength-note{
@@ -1154,6 +1154,25 @@ transform: translateY(0) !important;
 #sub-type-container{display:none!important;}
 </style>
 
+
+<style>
+/* Nearby-type card spacing: separate type names from the explanatory text. */
+#nearby-type-content h3 + p{
+  margin-top:18px;
+}
+#nearby-type-content .info-list + .result-detail{
+  margin-top:28px;
+}
+@media(max-width:640px){
+  #nearby-type-content h3 + p{
+    margin-top:16px;
+  }
+  #nearby-type-content .info-list + .result-detail{
+    margin-top:24px;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="container">
@@ -1190,6 +1209,11 @@ transform: translateY(0) !important;
       <article class="result-card">
         <h2>あなたのデザイナー像</h2>
         <p id="main-type-detail"></p>
+      </article>
+
+      <article id="nearby-type-card" class="result-card" hidden>
+        <h2 id="nearby-type-heading"></h2>
+        <div id="nearby-type-content"></div>
       </article>
 
       <article class="result-card product-strength-card">
@@ -1444,7 +1468,7 @@ function determineType(scores){
     const winner=leftScore>=rightScore?axis.left:axis.right;
     const difference=Math.abs(leftScore-rightScore);
     main+=winner;
-    if(difference<=3)close.push({...axis,position,difference,leftScore,rightScore});
+    if(difference===1)close.push({...axis,position,difference,leftScore,rightScore});
   });
   return {main,close};
 }
@@ -1516,6 +1540,73 @@ function getTypeTheme(typeCode){
   return "sp";
 }
 
+function flipTypeAxis(typeCode,axisPosition){
+  const alternatives=[
+    ["E","I"],
+    ["N","S"],
+    ["T","F"],
+    ["J","P"]
+  ];
+  const letters=typeCode.split("");
+  const pair=alternatives[axisPosition];
+  letters[axisPosition]=letters[axisPosition]===pair[0]?pair[1]:pair[0];
+  return letters.join("");
+}
+
+function getNearbyTypes(mainType,closeAxes){
+  const results=[];
+  const count=closeAxes.length;
+  for(let mask=1;mask<(1<<count);mask++){
+    let type=mainType;
+    closeAxes.forEach((axis,index)=>{
+      if(mask & (1<<index)) type=flipTypeAxis(type,axis.position);
+    });
+    results.push(type);
+  }
+  return results;
+}
+
+function renderNearbyTypeCard(result){
+  const card=document.getElementById("nearby-type-card");
+  const heading=document.getElementById("nearby-type-heading");
+  const content=document.getElementById("nearby-type-content");
+  const count=result.close.length;
+
+  if(count===0){
+    card.hidden=true;
+    heading.textContent="";
+    content.innerHTML="";
+    return;
+  }
+
+  card.hidden=false;
+  if(count===1){
+    const nearbyType=flipTypeAxis(result.main,result.close[0].position);
+    const nearbyInfo=typesData[nearbyType];
+    const axis=result.close[0];
+    heading.textContent="あなたに近いもう一つのタイプ";
+    content.innerHTML=`
+      <h3>${nearbyType}｜${nearbyInfo.name}</h3>
+      <p>${axis.left}/${axis.right}の得点が近いため、${result.main}の傾向に加えて、${nearbyType}の考え方も表れやすい結果です。</p>`;
+    return;
+  }
+
+  if(count===2){
+    const nearbyTypes=getNearbyTypes(result.main,result.close);
+    const axisText=result.close.map(axis=>`${axis.left}/${axis.right}`).join("と");
+    heading.textContent="あなたに近いタイプ";
+    content.innerHTML=`
+      <ul class="info-list">${nearbyTypes.map(type=>`<li><strong>${type}</strong>｜${typesData[type].name}</li>`).join("")}</ul>
+      <p class="result-detail">${axisText}の得点が近いため、今回の${result.main}に加えて、これらのタイプの特徴も部分的に表れやすい結果です。</p>`;
+    return;
+  }
+
+  const axisText=result.close.map(axis=>`${axis.left}/${axis.right}`).join("・");
+  heading.textContent="幅広いタイプの特徴を持つ結果です";
+  content.innerHTML=`
+    <p>${count}つの軸（${axisText}）で得点が近いため、特定の一つのタイプだけでは説明しにくい結果です。表示されている${result.main}は、今回の回答でわずかに得点が高かった側を組み合わせたタイプです。</p>`;
+}
+
 function showResult(scores,result){
   const info=typesData[result.main];
   resultSection.classList.remove("theme-nt","theme-nf","theme-sj","theme-sp");
@@ -1529,14 +1620,12 @@ function showResult(scores,result){
   fillList("risk-list",info.risks);
   fillList("domain-list",productProfile.domains);
   renderAxisChart(scores);
+  renderNearbyTypeCard(result);
 
   const badge=document.getElementById("result-badge");
-  if(result.close.length===0){
-    badge.textContent="4軸とも比較的明確";
-  }else{
-    const boundaryText=result.close.map(axis=>`${axis.left}/${axis.right} ${axis.leftScore}対${axis.rightScore}`).join("・");
-    badge.textContent=`境界に近い軸：${boundaryText}`;
-  }
+  badge.textContent=result.close.length===0
+    ? "4軸とも比較的明確"
+    : `${result.close.length}軸で得点が近い結果`;
 
   quizSection.style.display="none";
   typesSection.style.display="none";
